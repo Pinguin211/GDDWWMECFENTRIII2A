@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\Interface\LocationInterface;
 use App\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DepartmentRepository::class)]
-class Department implements \LocationInterface
+class Department implements LocationInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

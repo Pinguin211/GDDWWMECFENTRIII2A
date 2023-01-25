@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use App\Interface\LocationInterface;
 use App\Repository\RegionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use LocationInterface;
 
 #[ORM\Entity(repositoryClass: RegionRepository::class)]
 class Region implements LocationInterface

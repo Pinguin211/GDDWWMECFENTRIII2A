@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use App\Interface\LocationInterface;
 use App\Repository\CityRepository;
 use Doctrine\ORM\Mapping as ORM;
-use LocationInterface;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
 class City implements LocationInterface
