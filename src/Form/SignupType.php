@@ -7,7 +7,6 @@ use App\Service\RolesInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -39,8 +38,6 @@ class SignupType extends AbstractType
                     new Regex('^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*^', "Le mot de passe doit contenir au minimum 1 minuscule, 1 majuscule et 1 chiffre")
                 ],
                     ])
-            ->add('roles', HiddenType::class,
-                ['empty_data' => []])
             ->add('recruiter', CheckboxType::class,
                 ['mapped' => false, 'required' => false])
             ->add('cgu', CheckboxType::class,

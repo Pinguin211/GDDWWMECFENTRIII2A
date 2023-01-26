@@ -4,5 +4,6 @@ namespace App\Interface;
 
 interface LocationInterface
 {
+    public function getId(): ?int;
     public function getFullName(): string;
 }
