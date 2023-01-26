@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Candidate;
 use App\Entity\Recruter;
 use App\Entity\User;
 use App\Form\SignupType;
@@ -51,6 +52,8 @@ class SecurityController extends AbstractController
             $entityManager->flush();
             if ($roles->is_recruter($user))
                 $entityManager->persist(new Recruter($user));
+            if ($roles->is_candidate($user))
+                $entityManager->persist(new Candidate($user));
             $entityManager->flush();
         }
         return $this->render('security/signup.html.twig', [

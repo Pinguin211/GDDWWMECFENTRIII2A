@@ -22,22 +22,8 @@ class SignupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(["max" => 255, 'maxMessage' => "L'email doit contenir au maximum 255 caractères"]),
-                ]
-            ])
-            ->add('password', PasswordType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 8, 'max' => 32,
-                        'minMessage' => 'Le mot de passe doit contenir au minimum 8 caractères',
-                        'maxMessage' => 'Le mot de passe doit contenir au maximum 32 caractères',
-                    ]),
-                    new Regex('^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*^', "Le mot de passe doit contenir au minimum 1 minuscule, 1 majuscule et 1 chiffre")
-                ],
-                    ])
+            ->add('email', EmailType::class)
+            ->add('password', PasswordType::class)
             ->add('recruiter', CheckboxType::class,
                 ['mapped' => false, 'required' => false])
             ->add('cgu', CheckboxType::class,

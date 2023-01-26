@@ -33,13 +33,6 @@ class Recruter
         return $this->user;
     }
 
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getCompanyName(): ?string
     {
         return $this->company_name;
