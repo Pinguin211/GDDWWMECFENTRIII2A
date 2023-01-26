@@ -44,9 +44,9 @@ class SignupType extends AbstractType
                 ['mapped' => false])
             ->add('Inscription', SubmitType::class)
         ;
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event)
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event)
         {
-            $event->getData()->addRole($event->getForm()->get('recruiter')->getData() ? RolesInterface::ROLE_RECRUITER : RolesInterface::ROLE_CANDIDATE);
+            $event->getData()->addRole($event->getForm()->get('recruiter')->getData() ? RolesInterface::ROLE_RECRUTER : RolesInterface::ROLE_CANDIDATE);
         });
     }
 

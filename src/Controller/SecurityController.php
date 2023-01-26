@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Recruter;
 use App\Entity\User;
 use App\Form\SignupType;
+use App\Service\RolesInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +38,8 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/', name: 'app_signup')]
-    public function signup(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher)
+    public function signup(Request $request, EntityManagerInterface $entityManager,
+                           UserPasswordHasherInterface $hasher, RolesInterface $roles)
     {
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);
@@ -45,6 +48,9 @@ class SecurityController extends AbstractController
         {
             $user->setPassword($hasher->hashPassword($user, $user->getPassword()));
             $entityManager->persist($user);
+            $entityManager->flush();
+            if ($roles->is_recruter($user))
+                $entityManager->persist(new Recruter($user));
             $entityManager->flush();
         }
         return $this->render('security/signup.html.twig', [
