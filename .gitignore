@@ -1,12 +1,12 @@
 
 ###> symfony/framework-bundle ###
 .idea/
-/src/Controller/Test
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/sources/*
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

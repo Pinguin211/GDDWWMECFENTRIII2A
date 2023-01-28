@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CandidateRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
@@ -10,26 +12,39 @@ class Candidate
 {
 
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $fist_name = null;
+    private ?string $first_name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $last_name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $cv_name = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $cv_id = null;
 
     #[ORM\Column]
     private ?bool $activated = null;
+
+    #[ORM\OneToMany(mappedBy: 'candidate', targetEntity: AppliedCandidate::class, orphanRemoval: true)]
+    private Collection $applieds;
 
     public function __construct(User $user, bool $activated = false)
     {
         $this->user = $user;
         $this->activated = $activated;
+        $this->applieds = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getUser(): ?User
@@ -37,14 +52,14 @@ class Candidate
         return $this->user;
     }
 
-    public function getFistName(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->fist_name;
+        return $this->first_name;
     }
 
-    public function setFistName(?string $fist_name): self
+    public function setFirstName(?string $first_name): self
     {
-        $this->fist_name = $fist_name;
+        $this->first_name = $first_name;
 
         return $this;
     }
@@ -61,14 +76,14 @@ class Candidate
         return $this;
     }
 
-    public function getCvName(): ?string
+    public function getCvId(): ?string
     {
-        return $this->cv_name;
+        return $this->cv_id;
     }
 
-    public function setCvName(?string $cv_name): self
+    public function setCvId(?string $cv_id): self
     {
-        $this->cv_name = $cv_name;
+        $this->cv_id = $cv_id;
 
         return $this;
     }
@@ -81,6 +96,36 @@ class Candidate
     public function setActivated(bool $activated): self
     {
         $this->activated = $activated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AppliedCandidate>
+     */
+    public function getApplieds(): Collection
+    {
+        return $this->applieds;
+    }
+
+    public function addApplied(AppliedCandidate $applied): self
+    {
+        if (!$this->applieds->contains($applied)) {
+            $this->applieds->add($applied);
+            $applied->setCandidate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplied(AppliedCandidate $applied): self
+    {
+        if ($this->applieds->removeElement($applied)) {
+            // set the owning side to null (unless already changed)
+            if ($applied->getCandidate() === $this) {
+                $applied->setCandidate(null);
+            }
+        }
 
         return $this;
     }
