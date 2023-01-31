@@ -17,20 +17,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
-    }
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
@@ -40,8 +26,15 @@ class SecurityController extends AbstractController
 
     #[Route(path: '/', name: 'app_signup')]
     public function signup(Request $request, EntityManagerInterface $entityManager,
-                           UserPasswordHasherInterface $hasher, RolesInterface $roles)
+                           UserPasswordHasherInterface $hasher, RolesInterface $roles,
+                            AuthenticationUtils $authenticationUtils)
     {
+
+        //Login form
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastEmail = $authenticationUtils->getLastUsername();
+
+        //Signup form
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);
         $form->handleRequest($request);
@@ -56,8 +49,19 @@ class SecurityController extends AbstractController
                 $entityManager->persist(new Candidate($user));
             $entityManager->flush();
         }
+
+        //Stats
+        $nb_offers = $entityManager->createQuery('SELECT COUNT(o) FROM App\Entity\Offer o')->getOneOrNullResult()[1];
+        $nb_candidates = $entityManager->createQuery('SELECT COUNT(c) FROM App\Entity\Candidate c')->getOneOrNullResult()[1];
+        $nb_applies = $entityManager->createQuery('SELECT COUNT(a) FROM App\Entity\AppliedCandidate a')->getOneOrNullResult()[1];
+
         return $this->render('security/signup.html.twig', [
             'form' => $form->createView(),
+            'nb_offers' => $nb_offers,
+            'nb_candidates' => $nb_candidates,
+            'nb_applies' => $nb_applies,
+            'error' => $error,
+            'last_email' => $lastEmail
             ]);
     }
 }

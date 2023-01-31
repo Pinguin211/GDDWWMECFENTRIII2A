@@ -1,1 +1,22 @@
 @import '~bootstrap/scss/bootstrap';
+@import "fonts/fonts.scss";
+
+body {
+  .isDisabled {
+    pointer-events: none;
+  }
+
+  .row {
+    margin: 0;
+    padding: 0;
+  }
+
+  font-family: "Andada Pro Medium", serif;
+  font-size: 20px;
+  h1 {
+    font-family: "Andada Pro Bold", serif;
+    font-size: 48px;
+  }
+}
+@import "header";
+@import "footer";

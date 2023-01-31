@@ -1,0 +1,108 @@
+@mixin moveShadowBox($blur) {
+  box-shadow: 0 5px $blur #3F3F3F;
+  transition: 200ms ease;
+  &:hover {
+    box-shadow: 0 0 0;
+  }
+}
+
+@mixin stylised_button($font_size, $border_width)
+{
+  box-shadow: 0 5px 5px #3F3F3F;
+  color: black;
+  font-size: $font_size;
+  background-color: #D13434;
+  border: black solid $border_width;
+  @include moveShadowBox(5px);
+}
+
+main {
+
+  position: relative;
+  z-index: 1;
+
+  .container-fluid, .col-lg-auto {
+    margin: 0;
+    padding: 0;
+  }
+
+  #form > div, #stats > div {
+    text-shadow: 0 5px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  #stats {
+    text-align: center;
+
+    #number {
+      font-family: "Andada Pro Bold", serif;
+      text-align: center;
+      font-size: 48px;
+    }
+
+    #text {
+      font-size: 32px;
+    }
+
+    .row {
+      height: 33%;
+    }
+  }
+
+
+  #form {
+    h2, button {
+      font-family: "Andada Pro Bold", serif;
+      text-align: center;
+      font-size: 48px;
+    }
+
+    input {
+      @include moveShadowBox(5px)
+    }
+
+    #button {
+      text-align: center;
+
+      button {
+        @include stylised_button(32px, 5px);
+      }
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+
+    #form, #stats {
+      width: 50%;
+      margin: 50px 0;
+
+
+      > div {
+        background-color: rgba(255, 249, 249, 0.85);
+        height: 100%;
+        margin: 0 10%;
+        padding: 3%;
+        border-radius: 50px;
+        @include moveShadowBox(10px);
+      }
+
+    }
+  }
+
+
+  @media screen and (max-width: 992px) {
+
+    #form, #stats {
+      > div {
+        background-color: rgba(255, 249, 249, 1);
+        padding: 3%;
+      }
+    }
+
+    #form {
+      > div div {
+        margin: 50px;
+      }
+    }
+  }
+
+}

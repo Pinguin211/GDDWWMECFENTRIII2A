@@ -1,7 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sign up{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('signup') }}
+    <style>
+        @media screen and (min-width: 992px) {
+            body {
+                background-image: url('{{ asset('images/back.jpg') }}');
+                background-size: 100%;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <main>
+        <div class="row container-fluid">
+            <div class="col-lg-auto order-lg-1" id="form">
+                <div class="moveShadowBox">
+                    <h2>Inscrivez vous maintenant&nbsp;:</h2>
+                    {{ form_start(form) }}
+                    {{ form_row(form.email, { 'label' : 'Email :' }) }}
+                    {{ form_row(form.password, { 'label' : 'Mot de passe :' }) }}
+                    {{ form_row(form.recruiter, { 'label' : 'Cochez cette case si vous êtes un recruteur' }) }}
+                    {{ form_row(form.cgu, { 'label' : "Vous acceptez les conditions d'utilisations" }) }}
+                    <div id="button">
+                        {{ form_row(form.Inscription, { 'label' : "INSCRIPTION" }) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="col-lg-auto order-lg-0" id="stats">
+                <div>
+                    <div class="row">
+                        <p id="number">{{ nb_offers|number_format(0, '.', '  ') }}</p>
+                        <p id="text">ANNONCES EN LIGNE</p>
+                    </div>
+                    <div class="row">
+                        <p id="number">{{ nb_candidates|number_format(0, '.', '  ') }}</p>
+                        <p id="text">CANDIDATS INSCRITS</p>
+                    </div>
+                    <div class="row">
+                        <p id="number">{{ nb_applies|number_format(0, '.', '  ') }}</p>
+                        <p id="text">CANDIDATURES EN COURS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}

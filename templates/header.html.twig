@@ -1,0 +1,68 @@
+<header>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img id="logo" src="{{ asset('images/nav_logo.png') }}" alt="logo">
+            </a>
+            <a id="toggler" class="navbar-brand" href="#"><h1>TRT Conseil</h1></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse{% if error %} show{% endif %}" id="collapsibleNavbar">
+                <ul id="navigation_menu" class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Annonces</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Publier une annonce</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            {% if app.user %}
+                                {{ app.user.userIdentifier }}
+                            {% else %}
+                                Connexion
+                            {% endif %}
+                        </a>
+                        <ul id="connection_form" class="dropdown-menu dropdown-menu-end{% if error %} show{% endif %}" data-bs-popper="static">
+                            <li>
+                                {% if app.user %}
+                                    <a id="logout" href="{{ path('app_logout') }}">Se déconnecter</a>
+                                {% else %}
+                                    <form method="post">
+                                        <div id="title_connect">
+                                            <h1 class="h3 mb-3 font-weight-normal">Se Connecter :</h1>
+                                        </div>
+                                        {% if error %}
+                                            <div>
+                                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <label for="inputEmail">Email :</label>
+                                            <input type="email" value="{{ last_email }}" name="email" id="inputEmail"
+                                                   class="form-control" autocomplete="email" required autofocus>
+                                        </div>
+                                        <div>
+                                            <label for="inputPassword">Mot de passe :</label>
+                                            <input type="password" name="password" id="inputPassword" class="form-control"
+                                                   autocomplete="current-password" required>
+                                        </div>
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                        <div id="button_connect">
+                                            <button class="btn" type="submit">Se connecter</button>
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,54 @@
+footer {
+  z-index: 2;
+  position: relative;
+  background-color: #FFF4F4;
+  box-shadow: 0 -5px 10px #3F3F3F;
+
+  .row {
+    padding: 10px;
+    text-align: center;
+
+    #title {
+      text-decoration: underline;
+    }
+
+    li {
+      text-align: start;
+      list-style: none;
+      a {
+        text-decoration: none;
+        color: black;
+        opacity: 100%;
+        transition: 200ms ease;
+        &:hover {
+          opacity: 60%;
+        }
+      }
+    }
+  }
+
+  #end_message {
+    font-style: italic;
+    font-size: 16px;
+    padding-bottom: 2px;
+    margin-bottom: 0;
+    border-top: solid black 2px;
+    >p {
+      margin: 0;
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+    .row div {
+      width: 25%;
+    }
+  }
+
+
+  @media screen and (max-width: 992px) {
+    .row div {
+      width: 50%;
+    }
+  }
+
+}
