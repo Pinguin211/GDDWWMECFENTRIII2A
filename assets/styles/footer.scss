@@ -1,5 +1,5 @@
 footer {
-  z-index: 2;
+  z-index: 1;
   position: relative;
   background-color: #FFF4F4;
   box-shadow: 0 -5px 10px #3F3F3F;
@@ -29,8 +29,8 @@ footer {
 
   #end_message {
     font-style: italic;
-    font-size: 16px;
-    padding-bottom: 2px;
+    font-size: 0.8rem;
+    padding-bottom: 0.2rem;
     margin-bottom: 0;
     border-top: solid black 2px;
     >p {
@@ -38,14 +38,14 @@ footer {
     }
   }
 
-  @media screen and (min-width: 992px) {
+  @media (orientation: landscape) {
     .row div {
       width: 25%;
     }
   }
 
 
-  @media screen and (max-width: 992px) {
+  @media (orientation: portrait) {
     .row div {
       width: 50%;
     }

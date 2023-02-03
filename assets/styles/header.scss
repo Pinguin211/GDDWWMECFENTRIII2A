@@ -1,98 +1,89 @@
-@mixin moveShadowBox($blur) {
-  box-shadow: 0 5px $blur #3F3F3F;
+@mixin moveShadowBox {
+  box-shadow: 0 5px 5px #3F3F3F;
   transition: 200ms ease;
+  border-radius: 10px;
   &:hover {
     box-shadow: 0 0 0;
   }
 }
 
-@mixin stylised_button($font_size, $border_width)
-{
-  box-shadow: 0 5px 5px #3F3F3F;
-  color: black;
-  font-size: $font_size;
-  background-color: #D13434;
-  border: black solid $border_width;
-  @include moveShadowBox(5px);
+@mixin stylised_box {
+  @include moveShadowBox;
+  background-color: #FFF9F9;
 }
 
 header {
 
-  z-index: 2;
-  position: relative;
-  background-color: #FFF9F9;
-  box-shadow: 0 5px 10px #3F3F3F;
-  text-shadow: 0 5px 4px rgba(0, 0, 0, 0.25);
+  > nav {
+    z-index: 2;
+    position: relative;
+    background-color: #FFF9F9;
+    box-shadow: 0 5px 10px #3F3F3F;
+    text-shadow: 0 5px 4px rgba(0, 0, 0, 0.25);
 
-  #connection_form {
-    background-color: rgba(255, 249, 249, 0.95);
-    padding: 20px;
-    li>form {
-      input {
-        @include moveShadowBox(5px);
-      }
-      div {
-        padding: 20px;
-      }
-      #button_connect, #title_connect {
-        text-align: center;
-      }
 
-      #button_connect>button {
-        @include stylised_button(20px, 3px);
+
+    #navigation_menu {
+      width: 100%;
+      font-size: 2rem;
+      li {
+        padding: 0 5%;
+      }
+    }
+
+    #logout {
+      width: auto;
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  @media (orientation: landscape) {
+    > nav {
+      height: 100px;
+      h1 {
+        font-size: 3rem;
+      }
+      .navbar-nav {
+        font-size: 1rem;
+      }
+      #connection_form {
+        @include stylised_box;
+        #title_connect {
+          width: 30vw;
+        }
+        padding: 10%;
+        div {
+          padding-bottom: 5%;
+        }
       }
     }
   }
 
-  nav div {
-
-    @media screen and (min-width: 992px) {
-
-      #logo {
-        height: 80px;
-        width: auto;
+  @media (orientation: portrait) {
+    > nav {
+      min-height: 200px;
+      h1 {
+        font-size: 5rem;
       }
-
-      div {
-        #navigation_menu {
-          width: 100%;
-          font-size: 28px;
-
-          li {
-            padding: 0 5%;
-          }
-        }
-      }
-
-      #connection_form {
-        @include moveShadowBox(5px);
-        #title_connect {
-          width: 300px;
-        }
-        #logout {
-          color: black;
-          text-decoration: none;
-        }
-      }
-    }
-
-
-    @media screen and (max-width: 992px) {
-
-      #logo {
-        height: 70px;
-        width: auto;
-      }
-
-      div {
+      .navbar-nav {
         text-align: center;
+        font-size: 2rem;
       }
-
       #connection_form {
-        border: solid black 2px;
+        background-color: #FFF9F9;
+        text-align: center;
+        padding: 10%;
+        div {
+          padding-bottom: 3rem;
+        }
+        h1 {
+          font-size: 3rem;
+        }
+        label {
+          font-size: 1.5rem;
+        }
       }
-
     }
-
   }
 }

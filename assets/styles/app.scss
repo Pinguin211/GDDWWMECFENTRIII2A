@@ -2,6 +2,39 @@
 @import "fonts/fonts.scss";
 
 body {
+
+  @media (orientation: landscape){
+    @media (min-width: 576px) {
+      font-size: 12px;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 12px;
+    }
+
+    @media (min-width: 992px) {
+      font-size: 14px;
+    }
+
+    @media (min-width: 1200px) {
+      font-size: 14px;
+    }
+
+    @media (min-width: 1400px) {
+      font-size: 16px;
+    }
+  }
+
+  @media (orientation: portrait) {
+    @media (max-device-width: 767.98px) {
+      font-size: 38px;
+    }
+
+    @media (min-device-width: 768px) {
+      font-size: 40px;
+    }
+  }
+
   .isDisabled {
     pointer-events: none;
   }
@@ -12,10 +45,33 @@ body {
   }
 
   font-family: "Andada Pro Medium", serif;
-  font-size: 20px;
   h1 {
     font-family: "Andada Pro Bold", serif;
-    font-size: 48px;
+  }
+
+  @mixin moveShadowBox {
+    box-shadow: 0 5px 5px #3F3F3F;
+    transition: 200ms ease;
+    border-radius: 10px;
+    &:hover {
+      box-shadow: 0 0 0;
+    }
+  }
+
+  @mixin stylised_button {
+    @include moveShadowBox;
+    color: black;
+    font-size: 1.5rem;
+    background-color: #D13434;
+    border: black solid 3px;
+  }
+
+  .btn {
+    @include stylised_button;
+    &:hover {
+      background-color: #D13434;
+      border: black solid 3px;
+    }
   }
 }
 @import "header";

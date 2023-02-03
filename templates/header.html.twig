@@ -1,10 +1,10 @@
 <header>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img id="logo" src="{{ asset('images/nav_logo.png') }}" alt="logo">
             </a>
-            <a id="toggler" class="navbar-brand" href="#"><h1>TRT Conseil</h1></a>
+            <a class="navbar-brand" href="{{ path('app_signup') }}"><h1>TRT Conseil</h1></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse{% if error %} show{% endif %}" id="collapsibleNavbar">
                 <ul id="navigation_menu" class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Annonces</a>
+                        <a class="nav-link" href="{{ path('app_annonces') }}">Annonces</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Publier une annonce</a>
@@ -35,7 +35,7 @@
                                 {% else %}
                                     <form method="post">
                                         <div id="title_connect">
-                                            <h1 class="h3 mb-3 font-weight-normal">Se Connecter :</h1>
+                                            <h1>Se Connecter :</h1>
                                         </div>
                                         {% if error %}
                                             <div>

@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonces{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offers') }}
+{% endblock %}
+
+{% block body %}
+<main>
+    <div id="search_row" class="row">
+        <input type="text" id="search_offer">
+        <button type="button" id="search_button" class="btn">Recherché</button>
+        <button id="filters_button" class="btn" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapsibleFilters">Filtres</button>
+    </div>
+    <div id="hidden_offer" class="row"></div>
+    <div class="row">
+        <div class="collapse" id="collapsibleFilters">
+        <div id="filters" class="col-lg-auto">
+
+            <div class="row">
+                <p>Salaire :</p>
+                <div class="row filter_input">
+                    <div class="col">
+                        <label for="min_salary">Min :</label>
+                        <input type="number" id="min_salary">
+                    </div>
+                    <div class="col">
+                        <label for="max_salary">Max :</label>
+                        <input type="number" id="max_salary">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <p>Horaires :</p>
+                <div class="row filter_input">
+                    <div class="col">
+                        <label for="min_hourly">Min :</label>
+                        <input type="number" id="min_hourly">
+                    </div>
+                    <div class="col">
+                        <label for="max_hourly">Max :</label>
+                        <input type="number" id="max_hourly">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="location_type">Choisissez un type de lieux :</label>
+                <select id="location_type">
+                    <option value="">--Region, Département, Ville--</option>
+                    <option value="region">Région</option>
+                    <option value="department">Département</option>
+                    <option value="city">Ville</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="location">Choisissez un lieux :</label>
+                <select id="location">
+                    <option value="">----</option>
+                </select>
+            </div>
+            <div class="row">
+                <button id="refresh_button" type="button" class="btn">Actualiser</button>
+            </div>
+        </div>
+        </div>
+        <div id="offers" >
+        {% for offer in offers %}
+            <div class="offer row">
+                <ul id="info" class="col">
+                    <li id="title">{{ offer.getTitle }}</li>
+                    <li class="offer_info"><i class="bi-calendar"></i><p>{{offer.getpostdate.format('d/m/Y')}}</p></li>
+                    <li class="offer_info"><i class="bi-currency-dollar"></i><p>{{offer.getnetsalary}}€/mois</p></li>
+                    <li class="offer_info"><i class="bi-alarm"></i><p>{{offer.getweekhours}}h/Semaine</p></li>
+                    <li class="offer_info"><i class="bi-geo"></i><p>{{ offer.getlocation.getfullname(entitymanager)}}</p></li>
+                </ul>
+                <div id="description" class="col">
+                    <p>{{ delimitString(offer.getdescription, 500) }}</p>
+                    <div id="applied_button">
+                        <button type="button" class="btn" id="{{ offer.getid }}">POSTULÉ</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}
