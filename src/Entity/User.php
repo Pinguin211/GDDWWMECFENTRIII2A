@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Service\RolesInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -115,5 +117,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function haveRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles());
+    }
+
+    private function getExtendedRoles(string $class, string $role, EntityManagerInterface $entityManager): mixed
+    {
+        if (!$this->haveRole($role))
+            return false;
+        return $entityManager->getRepository($class)->findOneBy(['user'=>$this]);
+    }
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @return Recruter|false|NULL - NULL si n'a pas de class recruter, false si n'a pas les droits requis
+     */
+    public function getRecruter(EntityManagerInterface $entityManager): Recruter | NULL | false
+    {
+        return $this->getExtendedRoles(Recruter::class, RolesInterface::ROLE_RECRUTER, $entityManager);
+    }
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @return Recruter|false|NULL - NULL si n'a pas de class recruter, false si n'a pas les droits requis
+     */
+    public function getCandidate(EntityManagerInterface $entityManager): Candidate | NULL | false
+    {
+        return $this->getExtendedRoles(Candidate::class, RolesInterface::ROLE_CANDIDATE, $entityManager);
+    }
+
+    public function getAdmin(): Admin | false
+    {
+        return $this->haveRole(RolesInterface::ROLE_ADMIN) ? new Admin($this) : false;
+    }
+
+    public function getConsultant(): Consultant | false
+    {
+        return $this->haveRole(RolesInterface::ROLE_CONSULTANT) ? new Consultant($this) : false;
     }
 }

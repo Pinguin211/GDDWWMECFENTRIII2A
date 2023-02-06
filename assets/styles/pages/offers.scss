@@ -50,6 +50,7 @@ main {
   #filters {
     @include pageBox();
     position: fixed;
+    margin-top: 70px;
 
     .row {
       margin-bottom: 20px;
@@ -70,46 +71,44 @@ main {
           }
         }
       }
-
-      .offer {
-        @include pageBox;
-        margin-bottom: 30px;
-
-        .offer_info p {
-          color: #676767;
-        }
-
-        #description {
-          p {
-            height: 70%;
-          }
-
-          #applied_button {
-            height: 20%;
-            text-align: center;
-          }
-        }
-
-      }
     }
+  }
 
+  #offers {
+    margin-top: 100px;
+    .offer {
+      @include pageBox;
+      margin-bottom: 30px;
+
+      .offer_info p {
+        color: #676767;
+      }
+
+      #description {
+        p {
+          height: 70%;
+        }
+
+        #applied_button {
+          height: 20%;
+          text-align: center;
+        }
+      }
+
+    }
   }
 
 
   @media (orientation: landscape) {
 
-    #search_row {
-      margin-top: 100px;
-    }
-
     #filters {
-      margin-top: 170px;
       right: 5%;
     }
 
     #offers {
       width: 70%;
-      margin: 200px 15% 0 15%;
+      margin-left: 15%;
+      margin-right: 15%;
 
       .offer {
         @include pageBox;
@@ -142,12 +141,9 @@ main {
 
   @media (orientation: portrait) {
 
-    #search_row {
-      margin-top: 200px;
-    }
-
     #filters {
-      margin: 270px 5% 0 5%;
+      margin-right: 5%;
+      margin-left: 5%;
     }
 
     #offers {
@@ -157,7 +153,8 @@ main {
       }
 
       width: 90%;
-      margin: 300px 5% 0 5%;
+      margin-left: 5%;
+      margin-right: 5%;
 
       .offer {
         text-align: center;

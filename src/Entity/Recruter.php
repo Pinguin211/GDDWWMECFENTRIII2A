@@ -23,14 +23,14 @@ class Recruter
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $company_name = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Location $address = null;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private ?bool $activated = null;
 
     #[ORM\OneToMany(mappedBy: 'poster', targetEntity: Offer::class, orphanRemoval: true)]
     private Collection $offers;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
 
     public function __construct(User $user, bool $activated = false)
     {
@@ -64,18 +64,6 @@ class Recruter
     public function setCompanyName(?string $company_name): self
     {
         $this->company_name = $company_name;
-
-        return $this;
-    }
-
-    public function getAddress(): ?Location
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Location $address): self
-    {
-        $this->address = $address;
 
         return $this;
     }
@@ -120,5 +108,30 @@ class Recruter
         }
 
         return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getValueAsArray(array $excepts = []): array
+    {
+        $arr = [
+            'id' => $this->getId(),
+            'user_id' => $this->getUser()->getId(),
+            'company_name' => $this->getCompanyName(),
+            'address' => $this->getAddress()?->getValueAsArray(),
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
     }
 }

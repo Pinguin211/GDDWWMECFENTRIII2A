@@ -77,4 +77,17 @@ class Address implements LocationInterface
     {
         return $this->getNumber() . ' ' . $this->getStreetName() . ', ' . $this->getCity()->getFullName();
     }
+
+    public function getValueAsArray(array $excepts = [])
+    {
+        $arr = [
+            'id' => $this->getId(),
+            'number' => $this->getNumber(),
+            'street_name' => $this->getStreetName(),
+            'city_id' => $this->getCity()->getId(),
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
+    }
 }

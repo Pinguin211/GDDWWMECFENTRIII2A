@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('profil') }}
+{% endblock %}
+
+{% block body %}
+    <main id="20 $2y$13$EPT9CVUpl/gqUR17THUDGedLnNIIaMj4KJt/QwcIMKQSvk9dtk4L2">
+        <div id="window">
+            <div id="tabs_content" class="row">
+                <div id="profil" class="col-auto tabs active-tabs">Profil</div>
+                <div id="my_offer" class="col-auto tabs disabled-tabs">Mes offres</div>
+                <div id="approve_signup" class="col-auto tabs disabled-tabs">Gestion utilisateurs</div>
+                <div id="approve_offer" class="col-auto tabs disabled-tabs">Gestion offres</div>
+                <div id="approve_applied" class="col-auto tabs disabled-tabs">Gestion postulances</div>
+                <div id="admin_page" class="col-auto tabs disabled-tabs">Page Administrations</div>
+            </div>
+            <div id="main_content" class="row">
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('profil') }}
+{% endblock %}

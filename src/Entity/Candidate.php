@@ -129,4 +129,19 @@ class Candidate
 
         return $this;
     }
+
+    public function getValueAsArray(array $excepts = []): array
+    {
+        $arr = [
+            'id' => $this->getId(),
+            'user_id' => $this->getUser()->getId(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'cv_id' => $this->getCvId(),
+            'activated' => $this->isActivated(),
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
+    }
 }

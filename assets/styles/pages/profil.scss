@@ -1,0 +1,44 @@
+main {
+  #window {
+    padding: 50px 0;
+    margin-left: 5%;
+    margin-right: 5%;
+
+    #tabs_content {
+      position: absolute;
+      top: 121px;
+      height: 30px;
+
+      /* Onglet de la page */
+      .tabs {
+        border: black 1px solid;
+        border-radius: 10px 10px 0 0;
+      }
+      .active-tabs {
+        background-color: #FFF4F4;
+        border-bottom: none;
+      }
+      .disabled-tabs {
+        background-color: #898989;
+      }
+
+    }
+
+    #main_content {
+      min-height: 70vh;
+      background-color: #FFF4F4;
+      border: black solid 1px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
+      padding: 30px;
+      h1 {
+        font-size: 2rem;
+      }
+
+      /* Formulaire identification*/
+      #identification_form {
+
+      }
+    }
+  }
+
+}

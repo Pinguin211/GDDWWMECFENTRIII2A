@@ -4,6 +4,9 @@
 body {
 
   @media (orientation: landscape){
+    main {
+      margin-top: 100px;
+    }
     @media (min-width: 576px) {
       font-size: 12px;
     }
@@ -26,6 +29,9 @@ body {
   }
 
   @media (orientation: portrait) {
+    main {
+      margin-top: 200px;
+    }
     @media (max-device-width: 767.98px) {
       font-size: 38px;
     }
