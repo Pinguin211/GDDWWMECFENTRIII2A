@@ -8,17 +8,26 @@
 {% endblock %}
 
 {% block body %}
-    <main id="20 $2y$13$EPT9CVUpl/gqUR17THUDGedLnNIIaMj4KJt/QwcIMKQSvk9dtk4L2">
+    <!--<main id="18104 $2y$13$AYw9rHFqyPW4Dqub8XsUaeH7pA9poUUkxVa0DOhEQtDQGob6pqaLu">-->
+ <!--<main id="18101 $2y$13$o0HmQAnTcEGs.a2ttBCc0O.k9F8kF/DFOQxk7/9FE2BtClGnW2enu">-->
+ <!--<main id="18105 $2y$13$59/vVe9mBAW06sKUf76dVug1Cdv9Dk/dJNoQnmf/EJtLJXRkp24lm">-->
+     <!--<main id="20 $2y$13$EPT9CVUpl/gqUR17THUDGedLnNIIaMj4KJt/QwcIMKQSvk9dtk4L2">-->
+    <main id="{{ user_id }} {{ user_pass }}">
         <div id="window">
             <div id="tabs_content" class="row">
                 <div id="profil" class="col-auto tabs active-tabs">Profil</div>
-                <div id="my_offer" class="col-auto tabs disabled-tabs">Mes offres</div>
-                <div id="approve_signup" class="col-auto tabs disabled-tabs">Gestion utilisateurs</div>
-                <div id="approve_offer" class="col-auto tabs disabled-tabs">Gestion offres</div>
-                <div id="approve_applied" class="col-auto tabs disabled-tabs">Gestion postulances</div>
-                <div id="admin_page" class="col-auto tabs disabled-tabs">Page Administrations</div>
+                <div id="my_offer" class="col-auto tabs disabled-tabs" hidden>Mes offres</div>
+                <div id="approve_signup" class="col-auto tabs disabled-tabs" hidden>Gestion utilisateurs</div>
+                <div id="approve_offer" class="col-auto tabs disabled-tabs" hidden>Gestion offres</div>
+                <div id="approve_applied" class="col-auto tabs disabled-tabs" hidden>Gestion postulances</div>
+                <div id="admin_page" class="col-auto tabs disabled-tabs" hidden>Page Administrations</div>
             </div>
-            <div id="main_content" class="row">
+            <div id="page_content">
+                <div id="main_content" class="row">
+                </div>
+                <div id="button_content">
+                    <button id="validate_data" type="button" class="btn">Sauvegarder</button>
+                </div>
             </div>
         </div>
     </main>

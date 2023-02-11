@@ -158,4 +158,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->haveRole(RolesInterface::ROLE_CONSULTANT) ? new Consultant($this) : false;
     }
+
+    public function getValueAsArray(array $excepts = []): array
+    {
+        $arr = [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'password' => $this->getPassword(),
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
+    }
 }

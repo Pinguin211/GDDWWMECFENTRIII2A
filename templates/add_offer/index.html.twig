@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une annonce{% endblock %}
+
+{% block body %}
+    <main>
+        <div>
+            <h1>Ajouter une annonce</h1>
+            {{ form_start(form) }}
+            {{ form_row(form.title, {'label' : 'Titre :'}) }}
+            {{ form_row(form.week_hours, {'label' : 'Heures / semaines :'}) }}
+            {{ form_row(form.net_salary, {'label' : 'Salaire net par mois:'}) }}
+            {{ form_row(form.description, {'label' : 'Description :'}) }}
+            {{ form_row(form.location_type, {'label' : 'Choissisez le type de lieux :'}) }}
+            {{ form_row(form.location_id, {'label' : 'Choissisez lieux :'}) }}
+            {{ form_row(form.Soumettre) }}
+            {{ form_end(form) }}
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('addOffer') }}
+{% endblock %}

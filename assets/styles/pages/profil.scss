@@ -24,14 +24,26 @@ main {
 
     }
 
-    #main_content {
+    #page_content {
       min-height: 70vh;
       background-color: #FFF4F4;
       border: black solid 1px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
-      padding: 30px;
+      padding: 5vh;
       h1 {
         font-size: 2rem;
+      }
+
+      #main_content {
+        min-height: 50vh;
+      }
+
+      #button_content {
+        min-height: 10vh;
+        text-align: end;
+        #validate_data {
+          background-color: darkseagreen;
+        }
       }
 
       /* Formulaire identification*/

@@ -43,7 +43,7 @@ class Location
         }
     }
 
-    private static function getTypeByClass(string $class): int
+    public static function getTypeByClass(string $class): int
     {
         return match ($class) {
             Address::class => self::ADDRESS,
@@ -54,7 +54,7 @@ class Location
         };
     }
 
-    private static function getClassByType(int $type): string | false
+    public static function getClassByType(int $type): string | false
     {
         return match ($type) {
             self::ADDRESS => Address::class,

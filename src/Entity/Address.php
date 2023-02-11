@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address implements LocationInterface
 {
+
+    public const KEY_NUMBER = 'number';
+    public const KEY_STREET_NAME = 'street_name';
+    public const KEY_CITY_ID = 'city_id';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -82,9 +87,10 @@ class Address implements LocationInterface
     {
         $arr = [
             'id' => $this->getId(),
-            'number' => $this->getNumber(),
-            'street_name' => $this->getStreetName(),
-            'city_id' => $this->getCity()->getId(),
+            self::KEY_NUMBER => $this->getNumber(),
+            self::KEY_STREET_NAME => $this->getStreetName(),
+            self::KEY_CITY_ID => $this->getCity()->getId(),
+            'city_name' => $this->getCity()->getName(),
         ];
         foreach ($excepts as $except)
             unset($arr[$except]);

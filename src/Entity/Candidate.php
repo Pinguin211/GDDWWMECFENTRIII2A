@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Candidate
 {
 
+    public const KEY_USER_ID = 'user_id';
+    public const KEY_ID = 'id';
+    public const KEY_FIRST_NAME = 'first_name';
+    public const KEY_LAST_NAME = 'last_name';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -133,10 +138,10 @@ class Candidate
     public function getValueAsArray(array $excepts = []): array
     {
         $arr = [
-            'id' => $this->getId(),
-            'user_id' => $this->getUser()->getId(),
-            'first_name' => $this->getFirstName(),
-            'last_name' => $this->getLastName(),
+            self::KEY_ID => $this->getId(),
+            self::KEY_USER_ID => $this->getUser()->getId(),
+            self::KEY_FIRST_NAME => $this->getFirstName(),
+            self::KEY_LAST_NAME => $this->getLastName(),
             'cv_id' => $this->getCvId(),
             'activated' => $this->isActivated(),
         ];

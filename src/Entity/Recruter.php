@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Recruter
 {
 
+    public const KEY_COMPANY_NAME = 'company_name';
+    public const KEY_ADDRESS = 'address';
+    public const KEY_USER_ID = 'user_id';
+    public const KEY_ID = 'id';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -125,10 +130,10 @@ class Recruter
     public function getValueAsArray(array $excepts = []): array
     {
         $arr = [
-            'id' => $this->getId(),
-            'user_id' => $this->getUser()->getId(),
-            'company_name' => $this->getCompanyName(),
-            'address' => $this->getAddress()?->getValueAsArray(),
+            self::KEY_ID => $this->getId(),
+            self::KEY_USER_ID => $this->getUser()->getId(),
+            self::KEY_COMPANY_NAME => $this->getCompanyName(),
+            self::KEY_ADDRESS => $this->getAddress()?->getValueAsArray(),
         ];
         foreach ($excepts as $except)
             unset($arr[$except]);

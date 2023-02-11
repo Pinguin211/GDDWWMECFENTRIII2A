@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\OfferRepository;
+use App\Validator\InputOfferInformation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
 class Offer
@@ -16,6 +19,8 @@ class Offer
     #[ORM\Column]
     private ?int $id = null;
 
+    #[NotBlank]
+    #[Length(max: 255, maxMessage: "Le titre doit contenir au maximum 255 caractères")]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -26,12 +31,19 @@ class Offer
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
+    #[NotBlank]
+    #[InputOfferInformation(opt: 'hours')]
     #[ORM\Column]
     private ?int $week_hours = null;
 
+    #[NotBlank]
+    #[InputOfferInformation(opt: 'salary')]
     #[ORM\Column]
     private ?int $net_salary = null;
 
+    #[NotBlank]
+    #[Length(min: 50, max: 4000, minMessage: "La description doit contenir au minimum 50 caractères",
+        maxMessage: "La description doit contenir au maximum 4000 caractères")]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 

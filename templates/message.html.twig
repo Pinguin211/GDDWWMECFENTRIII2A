@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        main {
+            padding: 20vh 30vw;
+            text-align: center;
+            min-height: 70vh;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main>
+        <h1>{{ title }}</h1>
+        <p>{{ message }}</p>
+        <a href="{{ path(redirect_app) }}">Clickez ici pour être redirigé</a>
+    </main>
+{% endblock %}
