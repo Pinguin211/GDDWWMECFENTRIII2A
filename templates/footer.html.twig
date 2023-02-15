@@ -6,10 +6,15 @@
         <div class="col-lg order-1 order-lg-2">
             <p id="title">Navigation :</p>
             <ul>
-                <li><a href="#">Accueil</a></li>
-                <li><a href="#">Annonces</a></li>
-                <li><a href="#">Publier un annonce</a></li>
-                <li><a href="#">Mon Profil</a></li>
+                {% if app.user == false %}
+                <li><a href="{{ path('app_signup') }}">Accueil</a></li>
+                {% else %}
+                <li><a href="{{ path('app_profil')}}">Mon Profil</a></li>
+                {% endif %}
+                <li><a href="{{ path('app_annonces')}}">Annonces</a></li>
+                {% if is_granted('ROLE_RECRUTER') %}
+                <li><a href="{{ path('app_add_offer') }}">Publier un annonce</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class="col-lg order-2 order-lg-3">

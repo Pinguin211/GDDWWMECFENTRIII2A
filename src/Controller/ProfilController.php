@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Address;
+use App\Entity\Admin;
 use App\Entity\Candidate;
 use App\Entity\City;
+use App\Entity\Consultant;
+use App\Entity\Offer;
 use App\Entity\Recruter;
 use App\Entity\User;
 use App\Service\CheckerInterface;
@@ -33,9 +36,10 @@ class ProfilController extends AbstractController
         if (!($user = $this->getUser()))
             return $this->redirectToRoute('app_message', ['title' => 'Connecter Vous', 'message' => "Vous devez être connecter pour accéder a cette page"]);
 
+        $user_info = ['id' => $user->getId(), 'password' => $user->getPassword(), 'roles' => $user->getRoles()];
+
         return $this->render('profil/index.html.twig', [
-            'user_id' => $user->getId(),
-            'user_pass' => $user->getPassword(),
+            'user_info' => json_encode($user_info),
         ]);
     }
 
@@ -45,13 +49,12 @@ class ProfilController extends AbstractController
         try {
             if (!$checker->checkData($_POST, 'array', ['id', 'password']))
                 throw new Exception('Error Data', 422);
-            $user = self::getPlayerByIdPassword($_POST['id'], $_POST['password'], $entityManager);
+            $user = self::getUserByIdPassword($_POST['id'], $_POST['password'], $entityManager);
             return new JsonResponse(json_encode(self::getProfiles($user, $entityManager)));
         } catch (Exception $exception) {
             return new Response($exception->getMessage(), $exception->getCode());
         }
     }
-
     private static function getProfiles(User $user, EntityManagerInterface $entityManager)
     {
         return [
@@ -63,7 +66,6 @@ class ProfilController extends AbstractController
         ];
 
     }
-
     private static function getProfile(User $user, EntityManagerInterface $entityManager, string $profile)
     {
         $func = "get$profile";
@@ -84,9 +86,7 @@ class ProfilController extends AbstractController
                 throw new Exception('Error Data', 422);
             if (!$checker->checkUploadedFile($_FILES['file'], 2000000, ['.pdf'], ['application/pdf']))
                 throw new Exception("Le fichier n'est pas au bon format", 422);
-            $user = self::getPlayerByIdPassword($_POST['id'], $_POST['password'], $entityManager);
-            if (!($candidate = $user->getCandidate($entityManager)))
-                throw new Exception('Error data: only candidate can upload cv', 422);
+            $candidate = self::getRoledUserByPassWord(RolesInterface::ROLE_CANDIDATE, $_POST['id'], $_POST['password'], $entityManager);
             move_uploaded_file($_FILES['file']['tmp_name'], $path->getUserCvDirPath() . $candidate->getId() . '.pdf');
             $candidate->setCvId($candidate->getId());
             $entityManager->flush();
@@ -103,7 +103,7 @@ class ProfilController extends AbstractController
         try {
             if (!$checker->checkData($_POST, 'array', ['id', 'password', 'info']))
                 throw new Exception('Error Data', 422);
-            $user = self::getPlayerByIdPassword($_POST['id'], $_POST['password'], $entityManager);
+            $user = self::getUserByIdPassword($_POST['id'], $_POST['password'], $entityManager);
             $info = json_decode($_POST['info'], true);
             if (!$checker->checkData($info, 'array', [self::KEY_RECRUTER, self::KEY_CANDIDATE]))
                 throw new Exception('Error Data 1', 422);
@@ -209,11 +209,72 @@ class ProfilController extends AbstractController
     }
 
 
+    #[Route('/profil_get_recruter_offers')]
+    public function getRecruterOffers(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            if (!$checker->checkData($_POST, 'array', ['id', 'password']))
+                throw new Exception('Error Data', 422);
+            $recruter = self::getRoledUserByPassWord(RolesInterface::ROLE_RECRUTER, $_POST['id'], $_POST['password'], $entityManager);
+            $offers = $recruter->getOffers();
+            $arr_offers = [];
+            $except_list = [Offer::KEY_APPLIEDS_ID, Offer::KEY_LOCATION_ID, Offer::KEY_POSTER_ID, Offer::KEY_DESCRIPTION,
+                            Offer::KEY_WEEK_HOURS, Offer::KEY_NET_SALARY];
+            foreach ($offers as $offer)
+                $arr_offers[] = $offer->getValueAsArray($except_list);
+            return new JsonResponse(json_encode($arr_offers));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('/profil_make_recruter_action_on_offers')]
+    public function makeRecruterActionOnOffers(EntityManagerInterface $entityManager, CheckerInterface $checker)
+    {
+        try {
+            if (!$checker->checkData($_POST, 'array', ['id', 'password', 'info']) ||
+                !$checker->checkData(json_decode($_POST['info'], true), 'array', ['offers_ids', 'action_type']))
+                throw new Exception('Error Data', 422);
+            $info = json_decode($_POST['info'], true);
+            $recruter = self::getRoledUserByPassWord(RolesInterface::ROLE_RECRUTER, $_POST['id'], $_POST['password'], $entityManager);
+            if (self::makeActionOffers($recruter, $info['offers_ids'], $info['action_type'], $entityManager))
+                return new Response('Actions bien réaliser', 200);
+            else
+                return new Response('Rien à changé', 200);
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+    private static function makeActionOffers(Recruter $recruter, array $offer_ids, int $opt,
+                                             EntityManagerInterface $entityManager): bool
+    {
+        $finish = false;
+        $action = match ($opt) {
+            1 => 'make_archived',
+            2 => 'make_unarchived',
+            3 => 'make_delete',
+            default => throw new Exception('Error data', 422),
+        };
+        foreach ($offer_ids as $id)
+        {
+            if (!($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id' => $id])) ||
+                $offer->getPoster()->getId() !== $recruter->getId())
+                throw new Exception('Error data', 422);
+            else
+            {
+                $offer->$action($entityManager);
+                $finish = true;
+            }
+        }
+        return $finish;
+    }
+
+
     /**
      * Authentification de l'utilisateur
      * @throws Exception
      */
-    private static function getPlayerByIdPassword($post_id, $post_password, EntityManagerInterface $entityManager): User
+    private static function getUserByIdPassword($post_id, $post_password, EntityManagerInterface $entityManager): User
     {
         $id = $post_id ?? '';
         $password = $post_password ?? '';
@@ -224,6 +285,35 @@ class ProfilController extends AbstractController
             return $user;
         } else
             throw new Exception("User not found", 404);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function getRoledUserByPassWord(string $role, $post_user_id, $post_password,
+                            EntityManagerInterface $entityManager): Candidate | Recruter | Consultant | Admin
+    {
+        $user = self::getUserByIdPassword($post_user_id, $post_password, $entityManager);
+        switch ($role) {
+            case RolesInterface::ROLE_CANDIDATE:
+                $roled_user = $user->getCandidate($entityManager);
+                break;
+            case RolesInterface::ROLE_RECRUTER:
+                $roled_user = $user->getRecruter($entityManager);
+                break;
+            case RolesInterface::ROLE_CONSULTANT:
+                $roled_user = $user->getConsultant();
+                break;
+            case RolesInterface::ROLE_ADMIN:
+                $roled_user = $user->getAdmin();
+                break;
+            default:
+                $roled_user = false;
+        }
+        if ($roled_user)
+            return $roled_user;
+        else
+            throw new Exception('No right', 403);
     }
 
 }

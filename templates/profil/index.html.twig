@@ -8,11 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <!--<main id="18104 $2y$13$AYw9rHFqyPW4Dqub8XsUaeH7pA9poUUkxVa0DOhEQtDQGob6pqaLu">-->
- <!--<main id="18101 $2y$13$o0HmQAnTcEGs.a2ttBCc0O.k9F8kF/DFOQxk7/9FE2BtClGnW2enu">-->
- <!--<main id="18105 $2y$13$59/vVe9mBAW06sKUf76dVug1Cdv9Dk/dJNoQnmf/EJtLJXRkp24lm">-->
-     <!--<main id="20 $2y$13$EPT9CVUpl/gqUR17THUDGedLnNIIaMj4KJt/QwcIMKQSvk9dtk4L2">-->
-    <main id="{{ user_id }} {{ user_pass }}">
+    <main>
         <div id="window">
             <div id="tabs_content" class="row">
                 <div id="profil" class="col-auto tabs active-tabs">Profil</div>
@@ -31,6 +27,7 @@
             </div>
         </div>
     </main>
+    <div id="user_info" hidden>{{ user_info }}</div>
 {% endblock %}
 
 {% block javascripts %}

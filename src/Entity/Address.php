@@ -96,4 +96,9 @@ class Address implements LocationInterface
             unset($arr[$except]);
         return $arr;
     }
+
+    public function getName(): ?string
+    {
+        return $this->number . ', ' . $this->street_name;
+    }
 }

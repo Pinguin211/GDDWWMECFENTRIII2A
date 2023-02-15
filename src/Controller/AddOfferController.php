@@ -13,11 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AddOfferController extends AbstractController
 {
-    #[Route('/add_offer', name: 'app_add_offer')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/ajouter_annonce', name: 'app_add_offer')]
+    public function add_offer(Request $request, EntityManagerInterface $entityManager): Response
     {
-
-        $this->redirectToRoute('app_signup');
         if (!($user = $this->getUser()) || !($recruter = $user->getRecruter($entityManager)) || !$recruter->isActivated())
             return $this->redirectToRoute('app_message', ['title' => 'Accés refusé',
                 'message' => "Vous n'avez pas les droit requis"]);
@@ -27,9 +25,9 @@ class AddOfferController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            $loc_id = $form->get('location_id')->getData();
-            $loc_type = $form->get('location_type')->getData();
-            if ($loc_type == 1)
+            $loc_id = (int)$form->get('location_id')->getData();
+            $loc_type = (int)$form->get('location_type')->getData();
+            if ($loc_type === 1)
             {
                 if (($address = $recruter->getAddress()))
                     $loc = new Location($address);
@@ -37,7 +35,12 @@ class AddOfferController extends AbstractController
                     return $this->redirectToRoute('app_message', ['title' => 'Completer Profil', 'message' => "Vous devez completer votre profil pour poster cette annonce", 'redirect_app' => 'app_profil']);
             }
             else
-                $loc = new Location($entityManager->getRepository(Location::getClassByType($loc_type))->findOneBy(['id' => $loc_id]));
+            {
+                if (($type_loc = $entityManager->getRepository(Location::getClassByType($loc_type))->findOneBy(['id' => $loc_id])))
+                    $loc = new Location($type_loc);
+                else
+                    return $this->redirectToRoute('app_message', ['title' => 'Erreur Data', 'message' => "Recharger le formulaire.", 'redirect_app' => 'app_add_offer']);
+            }
             $entityManager->persist($loc);
             $entityManager->flush();
             $offer->setLocation($loc);
@@ -49,15 +52,59 @@ class AddOfferController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_message', [
                 'title' => 'Annonce Soumise',
-                'message' => "Votre annonces a était pris en compte, un consultant la validera dans les plus bref délais",
+                'message' => "Votre annonces a était pris en compte, un consultant la validera dans les plus bref délais,
+                attention une fois l'annonce validé il n'est plus possible de la modifier.",
                 'redirect_app' => 'app_annonces']);
-
-
         }
 
 
         return $this->render('add_offer/index.html.twig', [
             'form' => $form,
+            'pageTitle' => 'Ajouter une annonce',
+            'button' => 'Soumettre'
+        ]);
+    }
+
+
+    #[Route('/modifier_annonce', name: 'app_mod_offer')]
+    public function mod_offer(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if (!isset($_GET['id']) ||
+            !($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id' => $_GET['id']])) || //Si l'offre existe
+            !($user = $this->getUser()) || //Si l'user est bien connecté
+            !($recruter = $user->getRecruter($entityManager)) || //Si c'est bien un recruteur
+            !$recruter->isActivated() || //Si son compte est bien activé
+            $offer->getPoster()->getId() !== $recruter->getId() || //Si l'annonce lui appartient
+            $offer->isValidated()) //Si l'annonce est validé
+            return $this->redirectToRoute('app_message', ['title' => 'Accés refusé',
+                'message' => "Vous n'avez pas les droit requis"]);
+
+        $form = $this->createForm(OfferType::class, $offer);
+        $form->handleRequest($request);
+        $location = $offer->getLocation();
+        if (!$form->isSubmitted())
+            $form->get('location_type')->setData($location->getType());
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $loc_id = $form->get('location_id')->getData();
+            $loc_type = $form->get('location_type')->getData();
+            if ((int)$loc_id !== $location->getTypeId() || (int)$loc_type !== $location->getType())
+            {
+                $location->setType((int)$loc_type);
+                $location->setTypeId((int)$loc_id);
+            }
+            $entityManager->persist($offer);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_message', [
+                'title' => 'Annonce Modifié',
+                'message' => "Votre annonces a était pris en compte, un consultant la validera dans les plus bref délais,
+                attention une fois l'annonce validé il n'est plus possible de la modifier.",
+                'redirect_app' => 'app_annonces']);
+        }
+        return $this->render('add_offer/index.html.twig', [
+            'form' => $form,
+            'pageTitle' => 'Modifier une annonce',
+            'button' => 'Modifier'
         ]);
     }
 }

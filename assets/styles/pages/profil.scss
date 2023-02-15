@@ -1,3 +1,9 @@
+
+@mixin width-max ($width) {
+  width: $width;
+  max-width: $width;
+}
+
 main {
   #window {
     padding: 50px 0;
@@ -46,11 +52,52 @@ main {
         }
       }
 
-      /* Formulaire identification*/
-      #identification_form {
+      /* Onglet my_offer */
 
+      #offer_tab {
+        #offer_list {
+          margin-top: 2em;
+          width: 70vw;
+          position: absolute;
+          thead, tbody {
+            width: 100%;
+            background-color: white;
+            border: black solid 1px;
+
+            td, th {
+              text-align: center;
+              height: 2em;
+              overflow: hidden;
+            }
+
+            .offer_list_checkbox, .offer_list_detail, .offer_list_mod {
+              @include width-max(5vw);
+            }
+
+            .offer_list_title {
+              @include width-max(25vw)
+            }
+
+            .offer_list_date {
+              @include width-max(20vw)
+            }
+
+            .offer_list_status {
+              @include width-max(10vw)
+            }
+
+
+          }
+
+          tbody {
+            z-index: 0;
+            position: absolute;
+            max-height: 30vh;
+            min-height: 30vh;
+            overflow-y: scroll;
+          }
+        }
       }
     }
   }
-
 }

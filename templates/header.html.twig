@@ -14,9 +14,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_annonces') }}">Annonces</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_add_offer') }}">Publier une annonce</a>
-                    </li>
+                    {% if is_granted('ROLE_RECRUTER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_add_offer') }}">Publier une annonce</a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -31,6 +33,7 @@
                         <ul id="connection_form" class="dropdown-menu dropdown-menu-end{% if error is defined and error %} show{% endif %}" data-bs-popper="static">
                             <li>
                                 {% if app.user %}
+                                    <a id="logout" href="{{ path('app_profil') }}">Mon profil</a><hr>
                                     <a id="logout" href="{{ path('app_logout') }}">Se déconnecter</a>
                                 {% else %}
                                     <form method="post" action="{{ path('app_login') }}">

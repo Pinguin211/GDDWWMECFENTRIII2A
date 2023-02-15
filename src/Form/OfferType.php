@@ -4,10 +4,8 @@ namespace App\Form;
 
 use App\Entity\City;
 use App\Entity\Department;
-use App\Entity\Location;
 use App\Entity\Offer;
 use App\Entity\Region;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,11 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OfferType extends AbstractType
 {
@@ -48,16 +44,23 @@ class OfferType extends AbstractType
                 ]
             ])
             ->add('location_id', ChoiceType::class, [
-                'mapped' => false, 'choices' => ['Votre Adresse' => 0],
-                'constraints' => [new NotBlank()]
+                'mapped' => false
             ])
             ->add('Soumettre', SubmitType::class)
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                if ($event->getData()->getId())
+                {
+                    $loc = $event->getData()->getLocation()->getObject($this->entityManager);
+                    $event->getForm()->add('location_id', ChoiceType::class, ['choices' => [$loc->getName() => $loc->getId()], 'mapped' => false]);
+                }
+            })
             ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
                 $data = $event->getData();
                 $loc_id = $data['location_id'] ?? 0;
                 $loc_type = $data['location_type'];
                 $pass = false;
-                if ($loc_type > 1) {
+                if ($loc_type > 1)
+                {
                     switch ($loc_type) {
                         case 2:
                             $class = City::class;
@@ -71,11 +74,11 @@ class OfferType extends AbstractType
                     }
                     if ($this->entityManager->getRepository($class)->findOneBy(['id' => $loc_id]))
                         $pass = true;
-                } else if ($loc_type === 0)
-                    $pass = true;
-                if ($pass && $loc_id) {
-                    $event->getForm()->add('location_id', ChoiceType::class, ['choices' => [$loc_id => $loc_id], 'mapped' => false]);
                 }
+                elseif ($loc_type == 1)
+                    $pass = true;
+                if ($pass && $loc_id)
+                    $event->getForm()->add('location_id', ChoiceType::class, ['choices' => [$loc_id => $loc_id], 'mapped' => false]);
             })
         ;
     }

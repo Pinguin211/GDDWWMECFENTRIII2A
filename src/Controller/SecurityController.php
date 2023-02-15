@@ -39,6 +39,10 @@ class SecurityController extends AbstractController
                            UserPasswordHasherInterface $hasher, RolesInterface $roles,
                             $error = false, $lastEmail = '')
     {
+
+        if ($this->getUser())
+            return $this->redirectToRoute('app_annonces');
+
         //Signup form
         $user = new User();
         $form = $this->createForm(SignupType::class, $user);

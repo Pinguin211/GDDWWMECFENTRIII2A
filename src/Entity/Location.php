@@ -30,7 +30,7 @@ class Location
 
     public function __construct(mixed $obj)
     {
-        $type = self::getTypeByClass($obj::class);
+        $type = self::getTypeByObj($obj);
         if ($type == 0)
         {
             $this->type = self::REGION;
@@ -43,13 +43,13 @@ class Location
         }
     }
 
-    public static function getTypeByClass(string $class): int
+    public static function getTypeByObj(object $loc): int
     {
-        return match ($class) {
-            Address::class => self::ADDRESS,
-            City::class => self::CITY,
-            Department::class => self::DEPARTMENT,
-            Region::class => self::REGION,
+        return match (true) {
+            ($loc instanceof Address) => self::ADDRESS,
+            ($loc instanceof City) => self::CITY,
+            ($loc instanceof Department) => self::DEPARTMENT,
+            ($loc instanceof Region) => self::REGION,
             default => 0,
         };
     }
@@ -94,7 +94,7 @@ class Location
         return $this;
     }
 
-    private function getObject(EntityManagerInterface $entityManager): LocationInterface
+    public function getObject(EntityManagerInterface $entityManager): LocationInterface
     {
         $class = self::getClassByType($this->getType());
         if ($class)

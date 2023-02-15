@@ -64,6 +64,10 @@ body {
     }
   }
 
+  .moveShadowBox {
+    @include moveShadowBox
+  }
+
   @mixin stylised_button {
     @include moveShadowBox;
     color: black;

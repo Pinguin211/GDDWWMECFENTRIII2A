@@ -7,6 +7,7 @@ use App\Validator\InputOfferInformation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -14,6 +15,18 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: OfferRepository::class)]
 class Offer
 {
+    public const KEY_ID = 'id';
+    public const KEY_TITLE = 'title';
+    public const KEY_LOCATION_ID = 'location_id';
+    public const KEY_POST_DATE = 'post_date';
+    public const KEY_WEEK_HOURS = 'week_hours';
+    public const KEY_NET_SALARY = 'net_salary';
+    public const KEY_DESCRIPTION = 'description';
+    public const KEY_ARCHIVED = 'archived';
+    public const KEY_VALIDATED = 'validated';
+    public const KEY_APPLIEDS_ID = 'appplieds_id';
+    public const KEY_POSTER_ID = 'poster_id';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -174,6 +187,15 @@ class Offer
         return $this->applieds;
     }
 
+    public function getAppliedsIdList(): array
+    {
+        $res = [];
+        $arr = $this->getApplieds();
+        foreach ($arr as $applied)
+            $res[] = $applied->getId();
+        return $res;
+    }
+
     public function addApplied(AppliedCandidate $applied): self
     {
         if (!$this->applieds->contains($applied)) {
@@ -206,5 +228,47 @@ class Offer
         $this->poster = $poster;
 
         return $this;
+    }
+
+    public function make_archived(EntityManagerInterface $entityManager): void
+    {
+        $this->setArchived(true);
+        $entityManager->flush();
+    }
+
+    public function make_unarchived(EntityManagerInterface $entityManager): void
+    {
+        $this->setArchived(false);
+        $entityManager->flush();
+    }
+
+    public function make_delete(EntityManagerInterface $entityManager): void
+    {
+        $applieds = $this->getApplieds();
+        foreach ($applieds as $applied)
+            $entityManager->remove($applied);
+        $entityManager->remove($this->getLocation());
+        $entityManager->remove($this);
+        $entityManager->flush();
+    }
+
+    public function getValueAsArray(array $excepts = []): array
+    {
+        $arr = [
+            self::KEY_ID => $this->getId(),
+            self::KEY_TITLE => $this->getTitle(),
+            self::KEY_NET_SALARY => $this->getNetSalary(),
+            self::KEY_WEEK_HOURS => $this->getWeekHours(),
+            self::KEY_DESCRIPTION => $this->getDescription(),
+            self::KEY_POST_DATE => $this->getPostDate()->format("d/m/Y - H:i:s"),
+            self::KEY_ARCHIVED => $this->isArchived(),
+            self::KEY_VALIDATED => $this->isValidated(),
+            self::KEY_POSTER_ID => $this->getPoster()->getId(),
+            self::KEY_LOCATION_ID => $this->getLocation()->getId(),
+            self::KEY_APPLIEDS_ID => $this->getAppliedsIdList()
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
     }
 }

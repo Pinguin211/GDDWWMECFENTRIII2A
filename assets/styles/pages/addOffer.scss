@@ -1,0 +1,54 @@
+
+main>div {
+  background-color: #FFF4F4;
+  padding: 3%;
+  h1 {
+    text-align: center;
+    margin-bottom: 3%;
+  }
+  .inline {
+    display: flex;
+    div {
+      margin: 10px;
+    }
+  }
+  #validate {
+    text-align: center;
+  }
+
+  textarea {
+    height: 10em;
+  }
+
+
+  @media (orientation: landscape) {
+
+    border: solid black 1px;
+    margin: 20vh 20vw;
+
+  }
+
+  @media (orientation: portrait) {
+
+    form>div {
+      margin: 30px 0;
+    }
+
+    padding: 3vh 3vw;
+    h1 {
+      font-size: 2em;
+    }
+
+    .form-control, .form-select {
+      font-size: 1em;
+    }
+
+    .btn {
+      font-size: 1.5em;
+    }
+
+  }
+
+
+
+}
