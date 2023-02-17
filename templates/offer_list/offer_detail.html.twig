@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonces{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer_detail') }}
+{% endblock %}
+
+{% block body %}
+<main>
+    <div id="offer_detail">
+        <div class="row">
+            <div class="order-1 order-lg-0 col-lg-10 offer_title">
+                <h1>{{ offer.gettitle }}</h1>
+                <p>{{ offer.getPoster.getcompanyname }}</p>
+            </div>
+            <div class="order-0 order-lg-1 col-lg-2" id="date"><p >{{ offer.getpostdate.format('d/m/Y') }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 stickers moveShadowBox">
+                <p>Salaire net par mois : </p>
+                <p> {{ offer.getnetsalary }} €</p>
+            </div>
+            <div class="col-lg-3 stickers moveShadowBox">
+                <p>Horaires par semaine :  </p>
+                <p> {{ offer.getweekhours }} h</p>
+            </div>
+            <div class="col-lg-3 stickers moveShadowBox">
+                <i class="bi bi-pin-map"></i>
+                <p id="location">{{ offer.getlocation.getfullname(entitymanager) }}</p>
+            </div>
+        </div>
+        <div class="row description">
+            <p>{{ offer.getdescription | nl2br }}</p>
+        </div>
+        {% set candidate = false %}
+        {% if app.user %}{% set candidate = app.user.getcandidate(entitymanager) %}{% endif %}
+        {% if is_granted('ROLE_CANDIDATE') and candidate %}
+                <div class="row">
+            {% if offer.candidatealreadyapplied(candidate) %}
+                <p id="valid_applied">Postulé <i class="bi bi-check-circle" style="color: yellowgreen"></i></p>
+            {% else %}
+                <form action="/postuler" method="post">
+                    <input name="id" value="{{ offer.getid }}" hidden>
+                    <button type="submit" class="btn">POSTULER</button>
+                </form>
+            {% endif %}
+                </div>
+        {% endif %}
+        {% set recruter = false %}
+        {% if app.user %}{% set recruter = app.user.getrecruter(entitymanager) %}{% endif %}
+        {% if is_granted('ROLE_RECRUTER') and recruter and recruter.getid is same as(offer.getposter.getid) %}
+            <div id="candidate_list">
+                <label for="applied_candidate_list">Liste des candidatures validés : {{ offer.getCountValidateApplieds }}</label>
+                <table id="applied_candidate_list">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Cv</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                        {% for applied in offer.getapplieds %}
+                            {% if applied.isvalidated %}
+                                {% set candidate = applied.getcandidate %}
+                                <tr>
+                                    <td>{% if candidate.getfirstname %}{{ candidate.getfirstname }}{% else %}null{% endif %}</td>
+                                    <td>{% if candidate.getlastname %}{{ candidate.getlastname }}{% else %}null{% endif %}</td>
+                                    <td>
+                                        {% if candidate.getcvpath %}
+                                            <a class="bi bi-file-earmark-person" href="{{ candidate.getcvpath }}" target="_blank"></a>
+                                        {% else %}
+                                            <i class="bi bi-file-earmark-excel" style="color: #D13434"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CandidateRepository;
+use App\Service\PathInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -148,5 +149,13 @@ class Candidate
         foreach ($excepts as $except)
             unset($arr[$except]);
         return $arr;
+    }
+
+    public function getCvPath(): string | false
+    {
+        if (($cv_id = $this->getCvId()))
+            return '/cv/' . $cv_id . '.pdf';
+        else
+            return false;
     }
 }

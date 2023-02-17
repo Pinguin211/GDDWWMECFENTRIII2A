@@ -24,6 +24,13 @@ class AppliedCandidate
     #[ORM\JoinColumn(nullable: false)]
     private ?Offer $offer = null;
 
+    public function __construct(Candidate $candidate, Offer $offer)
+    {
+        $this->offer = $offer;
+        $this->candidate = $candidate;
+        $this->validated = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -69,6 +69,8 @@ class SecurityController extends AbstractController
             'nb_offers' => $nb_offers,
             'nb_candidates' => $nb_candidates,
             'nb_applies' => $nb_applies,
+            'error' => $error,
+            'last_email' => $lastEmail
             ]);
     }
 }

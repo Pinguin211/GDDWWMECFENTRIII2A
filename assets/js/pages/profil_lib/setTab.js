@@ -36,7 +36,7 @@ export function setTabProfil(arr_info, tab) {
         '<div>' +
         '<h1>Profil :</h1>' +
         '<label for="email">Email :</label>' +
-        `<input type="text" id="email" value="${arr_info.user.email}">` +
+        `<input type="text" id="email" value="${arr_info.user.email}" disabled>` +
         '</div>'
     )
 

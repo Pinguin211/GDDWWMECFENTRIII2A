@@ -3,7 +3,7 @@
 
 body {
 
-  @media (orientation: landscape){
+  @media (orientation: landscape) and (min-device-width: 992px){
     main {
       margin-top: 100px;
     }
@@ -28,7 +28,7 @@ body {
     }
   }
 
-  @media (orientation: portrait) {
+  @media (orientation: portrait), (max-width: 992px) {
     main {
       margin-top: 200px;
     }
@@ -71,7 +71,7 @@ body {
   @mixin stylised_button {
     @include moveShadowBox;
     color: black;
-    font-size: 1.5rem;
+    font-size: 1.5em;
     background-color: #D13434;
     border: black solid 3px;
   }
@@ -82,6 +82,14 @@ body {
       background-color: #D13434;
       border: black solid 3px;
     }
+  }
+
+  #valid_applied {
+    font-size: 2em;
+    border: solid black 2px;
+    background-color: green;
+    width: auto;
+    border-radius: 10px;
   }
 }
 @import "header";

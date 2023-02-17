@@ -53,4 +53,14 @@ class Region implements LocationInterface
     {
         return $this->getName();
     }
+
+    public function getType(): int
+    {
+        return Location::getTypeByObj($this);
+    }
+
+    public function getTypeString(): string
+    {
+        return Location::getTypeNameByObj($this);
+    }
 }

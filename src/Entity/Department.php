@@ -69,4 +69,14 @@ class Department implements LocationInterface
     {
         return $this->getName() . ', ' . $this->getRegion()->getFullName();
     }
+
+    public function getType(): int
+    {
+        return Location::getTypeByObj($this);
+    }
+
+    public function getTypeString(): string
+    {
+        return Location::getTypeNameByObj($this);
+    }
 }

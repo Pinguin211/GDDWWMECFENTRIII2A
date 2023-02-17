@@ -36,7 +36,7 @@ function getRowContent(id, info, classes, nb) {
         td(info.title, {'class': id + '_' + classes[1]}),
         td(info.post_date, {'class': id + '_' + classes[2]}),
         td(info.validated ? 'Validé' : 'Non validé', {'class': id + '_' + classes[3]}),
-        td(a(i('',{'class': 'bi bi-eye'}), {'href': '/detail_annonce?id=' + info.id}), {'class': id + '_' + classes[4]}),
+        td(a(i('',{'class': 'bi bi-eye'}), {'href': '/annonce_detail?id=' + info.id}), {'class': id + '_' + classes[4]}),
         td(a(i('',{'class': 'bi bi-pencil'}), {'href': '/modifier_annonce?id=' + info.id}), {'class': id + '_' + classes[5]}),
     ])
 }

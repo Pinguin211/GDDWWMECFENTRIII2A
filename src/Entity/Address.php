@@ -101,4 +101,14 @@ class Address implements LocationInterface
     {
         return $this->number . ', ' . $this->street_name;
     }
+
+    public function getType(): int
+    {
+        return Location::getTypeByObj($this);
+    }
+
+    public function getTypeString(): string
+    {
+        return Location::getTypeNameByObj($this);
+    }
 }

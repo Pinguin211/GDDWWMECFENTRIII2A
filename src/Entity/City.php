@@ -69,4 +69,14 @@ class City implements LocationInterface
     {
         return $this->getName() . ', ' . $this->getDepartment()->getFullName();
     }
+
+    public function getType(): int
+    {
+        return Location::getTypeByObj($this);
+    }
+
+    public function getTypeString(): string
+    {
+        return Location::getTypeNameByObj($this);
+    }
 }

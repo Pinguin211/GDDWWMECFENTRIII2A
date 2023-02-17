@@ -18,6 +18,6 @@
     <main>
         <h1>{{ title }}</h1>
         <p>{{ message }}</p>
-        <a href="{{ path(redirect_app) }}">Clickez ici pour être redirigé</a>
+        <a href="{% if is_url %}{{ redirect_app }}{% else %}{{ path(redirect_app) }}{% endif %}">Clickez ici pour être redirigé</a>
     </main>
 {% endblock %}

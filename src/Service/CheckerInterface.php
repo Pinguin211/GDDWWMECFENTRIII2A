@@ -23,6 +23,11 @@ class CheckerInterface
 
     public function checkData(mixed $data, string $type, array $array_values = []): bool
     {
+        return self::checkDataStatic($data, $type, $array_values);
+    }
+
+    public static function checkDataStatic(mixed $data, string $type, array $array_values = []): bool
+    {
         if (empty($data))
             return false;
         switch ($type) {
@@ -51,5 +56,13 @@ class CheckerInterface
                 return false;
         }
         return true;
+    }
+
+    public static function checkArrayDataStatic(array $arr, string $key, string $type, array $array_values = [])
+    {
+        if (isset($arr[$key]))
+            return self::checkDataStatic($arr[$key], $type, $array_values);
+        else
+            return false;
     }
 }

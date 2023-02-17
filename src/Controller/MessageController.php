@@ -15,6 +15,7 @@ class MessageController extends AbstractController
             'title' => $_GET['title'] ?? 'Erreur',
             'message' => $_GET['message'] ?? "Revenir à l'accueil",
             'redirect_app' => $_GET['redirect_app'] ?? 'app_signup',
+            'is_url' => $_GET['is_url'] ?? false,
         ]);
     }
 }

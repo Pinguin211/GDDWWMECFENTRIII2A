@@ -11,10 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Location
 {
     //Les different type de location
-    private const ADDRESS = 1;
-    private const CITY = 2;
-    private const DEPARTMENT = 3;
-    private const REGION = 4;
+    public const ADDRESS = 1;
+    public const CITY = 2;
+    public const DEPARTMENT = 3;
+    public const REGION = 4;
 
 
     #[ORM\Id]
@@ -54,6 +54,17 @@ class Location
         };
     }
 
+    public static function getTypeNameByObj(object $loc): string
+    {
+        return match (true) {
+            ($loc instanceof Address) => 'Adresse',
+            ($loc instanceof City) => 'Ville',
+            ($loc instanceof Department) => 'Département',
+            ($loc instanceof Region) => 'Région',
+            default => 'Erreur',
+        };
+    }
+
     public static function getClassByType(int $type): string | false
     {
         return match ($type) {
@@ -61,6 +72,17 @@ class Location
             self::CITY => City::class,
             self::DEPARTMENT => Department::class,
             self::REGION => Region::class,
+            default => false,
+        };
+    }
+
+    public static function getMasterColByType(int $type): string
+    {
+        return match ($type) {
+            self::ADDRESS => 'city',
+            self::CITY => 'department',
+            self::DEPARTMENT => 'region',
+            self::REGION => 'id',
             default => false,
         };
     }

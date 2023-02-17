@@ -271,4 +271,34 @@ class Offer
             unset($arr[$except]);
         return $arr;
     }
+
+    public function appliedThisOffer(Candidate $candidate, EntityManagerInterface $entityManager)
+    {
+        $applied = new AppliedCandidate($candidate, $this);
+        $entityManager->persist($applied);
+        $entityManager->flush();
+    }
+
+    public function candidateAlreadyApplied(Candidate $candidate): bool
+    {
+        $applieds = $this->getApplieds();
+        foreach ($applieds as $applied)
+        {
+            if ($applied->getCandidate()->getId() === $candidate->getId())
+                return true;
+        }
+        return false;
+    }
+
+    public function getCountValidateApplieds(): int
+    {
+        $nb = 0;
+        $applieds = $this->getApplieds();
+        foreach ($applieds as $applied)
+        {
+            if ($applied->isValidated())
+                $nb++;
+        }
+        return $nb;
+    }
 }

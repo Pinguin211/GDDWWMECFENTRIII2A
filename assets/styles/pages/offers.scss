@@ -39,10 +39,15 @@ main {
       @include moveShadowBox(5px);
     }
 
+    #filters_button {
+      position: fixed;
+      right: 0;
+    }
+
     #search_button, #filters_button {
       margin-right: 5%;
       width: 15%;
-      height: 3rem;
+      font-size: 1.5rem;
     }
   }
 
@@ -51,6 +56,7 @@ main {
     @include pageBox();
     position: fixed;
     margin-top: 70px;
+    z-index: 4;
 
     .row {
       margin-bottom: 20px;
@@ -75,8 +81,12 @@ main {
   }
 
   #offers {
+    p, i {
+      color: Black;
+    }
     margin-top: 100px;
     .offer {
+      text-decoration: none;
       @include pageBox;
       margin-bottom: 30px;
 
@@ -98,8 +108,33 @@ main {
     }
   }
 
+  #pageIndex {
+    z-index: 3;
+    border-bottom: black 1px solid;
+    box-shadow: 0 -5px 5px grey;
+    width: 100%;
+    background-color: #FFF4F4;
+    margin: auto;
+    text-align: center;
+    p {
+      font-size: 1.3em;
+      a {
+        color: black;
+        margin: 1em;
+      }
+    }
+  }
 
-  @media (orientation: landscape) {
+  #no_result {
+    min-width: 100%;
+    min-height: 60vh;
+    text-align: center;
+    font-size: 1.5em;
+    padding-top: 20vh;
+  }
+
+
+  @media (orientation: landscape) and (min-device-width: 992px) {
 
     #filters {
       right: 5%;
@@ -139,7 +174,7 @@ main {
   }
 
 
-  @media (orientation: portrait) {
+  @media (orientation: portrait), (max-width: 992px) {
 
     #filters {
       margin-right: 5%;

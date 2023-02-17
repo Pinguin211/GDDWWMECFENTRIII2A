@@ -10,81 +10,126 @@
 {% block body %}
 <main>
     <div id="search_row" class="row">
-        <input type="text" id="search_offer">
-        <button type="button" id="search_button" class="btn">Recherché</button>
+        <form method="get" action="{{ path('app_annonces') }}">
+            <input type="text" id="search_offer" name="search" value="{{ filters.search }}">
+            <button type="submit" id="search_button" class="btn">Recherché</button>
+        </form>
         <button id="filters_button" class="btn" type="button" data-bs-toggle="collapse"
                 data-bs-target="#collapsibleFilters">Filtres</button>
     </div>
     <div id="hidden_offer" class="row"></div>
     <div class="row">
         <div class="collapse" id="collapsibleFilters">
-        <div id="filters" class="col-lg-auto">
-
-            <div class="row">
-                <p>Salaire :</p>
-                <div class="row filter_input">
-                    <div class="col">
-                        <label for="min_salary">Min :</label>
-                        <input type="number" id="min_salary">
+            <div id="filters" class="col-lg-auto">
+                <form method="get" action="{{ path('app_annonces') }}">
+                    <div class="row">
+                        <p>Salaire :</p>
+                        <div class="row filter_input">
+                            <div class="col">
+                                <label for="min_salary">Min :</label>
+                                <input type="number" id="min_salary" name="min_salary" value="{{ filters.min_salary }}">
+                            </div>
+                            <div class="col">
+                                <label for="max_salary">Max :</label>
+                                <input type="number" id="max_salary" name="max_salary" value="{{ filters.max_salary }}">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="max_salary">Max :</label>
-                        <input type="number" id="max_salary">
+                    <div class="row">
+                        <p>Horaires :</p>
+                        <div class="row filter_input">
+                            <div class="col">
+                                <label for="min_hours">Min :</label>
+                                <input name="min_hours" type="number" id="min_hours" value="{{ filters.min_hours }}">
+                            </div>
+                            <div class="col">
+                                <label for="max_hours">Max :</label>
+                                <input name="max_hours" type="number" id="max_hours" value="{{ filters.max_hours }}">
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <p>Horaires :</p>
-                <div class="row filter_input">
-                    <div class="col">
-                        <label for="min_hourly">Min :</label>
-                        <input type="number" id="min_hourly">
+                    <div class="row">
+                        <label for="location_type">Choisissez un type de lieux :</label>
+                        <select id="location_type" name="location_type">
+                            <option value="{{ filters.location_type }}">{{ filters.location_type_name }}</option>
+                            <option value="4">Région</option>
+                            <option value="3">Département</option>
+                            <option value="2">Ville</option>
+                        </select>
                     </div>
-                    <div class="col">
-                        <label for="max_hourly">Max :</label>
-                        <input type="number" id="max_hourly">
+                    <div class="row">
+                        <label for="location_id">Choisissez un lieux :</label>
+                        <select id="location_id" name="location_id">
+                            <option value="{{ filters.location_id }}">{{ filters.location_id_name }}</option>
+                        </select>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <label for="location_type">Choisissez un type de lieux :</label>
-                <select id="location_type">
-                    <option value="">--Region, Département, Ville--</option>
-                    <option value="region">Région</option>
-                    <option value="department">Département</option>
-                    <option value="city">Ville</option>
-                </select>
-            </div>
-            <div class="row">
-                <label for="location">Choisissez un lieux :</label>
-                <select id="location">
-                    <option value="">----</option>
-                </select>
-            </div>
-            <div class="row">
-                <button id="refresh_button" type="button" class="btn">Actualiser</button>
+                    <input type="text" value="{{ filters.search }}" name="search" hidden>
+                    <div class="row">
+                        <button id="refresh_button" type="submit" class="btn">Actualiser</button>
+                    </div>
+                </form>
             </div>
         </div>
-        </div>
-        <div id="offers" >
-        {% for offer in offers %}
-            <div class="offer row">
-                <ul id="info" class="col">
-                    <li id="title">{{ offer.getTitle }}</li>
-                    <li class="offer_info"><i class="bi-calendar"></i><p>{{offer.getpostdate.format('d/m/Y')}}</p></li>
-                    <li class="offer_info"><i class="bi-currency-dollar"></i><p>{{offer.getnetsalary}}€/mois</p></li>
-                    <li class="offer_info"><i class="bi-alarm"></i><p>{{offer.getweekhours}}h/Semaine</p></li>
-                    <li class="offer_info"><i class="bi-geo"></i><p>{{ offer.getlocation.getfullname(entitymanager)}}</p></li>
-                </ul>
-                <div id="description" class="col">
-                    <p>{{ delimitString(offer.getdescription, 500) }}</p>
-                    <div id="applied_button">
-                        <button type="button" class="btn" id="{{ offer.getid }}">POSTULÉ</button>
-                    </div>
+        <div id="offers">
+            {% if offers is empty %}
+                <div id="no_result">
+                    <p>Aucun résultat pour votre recherche</p>
                 </div>
-            </div>
-        {% endfor %}
+            {% else %}
+                <p>Résultats de la recherche: {{ nb_result }} {% if nb_result > 1 %}annonces trouvées{% else %}annonce trouvée{% endif %}</p>
+                {% for offer in offers %}
+                    <a class="offer row" href="{{ path('app_offer_detail') }}?id={{ offer.getid }}">
+                        <ul id="info" class="col">
+                            <li id="title"><p>{{ offer.getTitle }}</p></li>
+                            <li class="offer_info"><i class="bi-calendar"></i>
+                                <p>{{ offer.getpostdate.format('d/m/Y') }}</p></li>
+                            <li class="offer_info"><i class="bi-currency-dollar"></i>
+                                <p>{{ offer.getnetsalary }}€/mois</p></li>
+                            <li class="offer_info"><i class="bi-alarm"></i>
+                                <p>{{ offer.getweekhours }}h/Semaine</p></li>
+                            <li class="offer_info"><i class="bi-geo"></i>
+                                <p>{{ offer.getlocation.getfullname(entitymanager) }}</p></li>
+                        </ul>
+                        <div id="description" class="col">
+                            <p>{{ delimitString(offer.getdescription, 500) | nl2br }}</p>
+                            {% if app.user %}{% set candidate = app.user.getcandidate(entitymanager) %}{% endif %}
+                            {% if is_granted('ROLE_CANDIDATE') and candidate %}
+                                <div class="row">
+                                    {% if offer.candidatealreadyapplied(candidate) %}
+                                        <p id="valid_applied">Postulé <i class="bi bi-check-circle" style="color: yellowgreen"></i></p>
+                                    {% else %}
+                                        <form action="/postuler" method="post">
+                                            <input name="id" value="{{ offer.getid }}" hidden>
+                                            <input name="now_url" value="{{ index.now_url }}" hidden>
+                                            <button type="submit" class="btn">POSTULER</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div id="pageIndex" class="row">
+            <p>
+                {% if index.prev_url is defined%}
+                    <a href="{{ index.prev_url }}">{{ index.now - 1 }}</a>
+                {% endif %}
+                <a href="#">{{ index.now }}</a>
+                {% if index.next_url is defined %}
+                    <a href="{{ index.next_url }}">{{ index.now + 1 }}</a>
+                {% endif %}
+                {% if index.max  is defined %}
+                    <a href="{{ index.max_url }}">...{{ index.max }}</a>
+                {% endif %}
+            </p>
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('offers') }}
 {% endblock %}

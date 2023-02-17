@@ -38,7 +38,7 @@ header {
     }
   }
 
-  @media (orientation: landscape) {
+  @media (orientation: landscape) and (min-width: 992px) {
     > nav {
       height: 100px;
       h1 {
@@ -60,7 +60,7 @@ header {
     }
   }
 
-  @media (orientation: portrait) {
+  @media (orientation: portrait), (max-width: 992px) {
     > nav {
       min-height: 200px;
       h1 {

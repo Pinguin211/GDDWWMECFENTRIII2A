@@ -1,0 +1,132 @@
+
+
+main {
+  #offer_detail {
+    background-color: #FFF4F4;
+    padding: 3vh 3vw;
+    border: solid black 1px;
+    box-shadow: 3px 3px 5px grey, -3px -3px 5px grey ;
+    border-radius: 10px;
+    text-align: center;
+
+    div {
+      margin-bottom: 4em;
+    }
+
+    .offer_title {
+      margin: 0;
+      h1 {
+        font-size: 3em;
+      }
+      p {
+        font-style: italic;
+      }
+    }
+
+    #date {
+      font-style: italic;
+    }
+
+    .stickers {
+      height: 6em;
+      background-color: #D13434;
+      color: white;
+      border: solid 1px black;
+      margin: auto;
+      :nth-child(even) {
+        font-size: 1.6em;
+      }
+      #location {
+        font-size: 1em;
+      }
+    }
+
+    .description {
+      background-color: white;
+      border: black solid 1px;
+      padding: 2%;
+      text-align: start;
+      max-height: 30em;
+      min-height: 30em;
+      overflow-y: scroll;
+    }
+
+    #valid_applied {
+      margin: auto;
+    }
+
+  }
+
+  #candidate_list {
+    padding-bottom: 10em;
+
+    table#applied_candidate_list {
+      position: absolute;
+
+      td, th {
+        height: 2em;
+      }
+
+      tbody, thead {
+        background-color: white;
+        border: solid 1px black;
+      }
+
+      tbody {
+        position: absolute;
+        height: 10em;
+        overflow-y: scroll;
+
+        tr:nth-child(even) {
+          background-color: #b0b0b0;
+        }
+      }
+    }
+  }
+
+
+  @media (orientation: landscape) and (min-device-width: 992px) {
+    padding: 5vh 20vw;
+
+    #candidate_list {
+      table#applied_candidate_list {
+        width: calc(60vw - 6vw);
+
+        td {
+          width: calc(60vw - 6vw);
+        }
+
+        tbody {
+          width: calc(60vw - 6vw);
+        }
+      }
+    }
+
+  }
+
+
+    @media (orientation: portrait), (max-width: 992px) {
+      padding: 5vh 5vw;
+      .stickers {
+        width: 40%;
+      }
+
+
+      #candidate_list {
+        table#applied_candidate_list {
+          width: calc(90vw - 6vw);
+
+          td {
+            width: calc(90vw - 6vw);
+          }
+
+          tbody {
+            width: calc(90vw - 6vw);
+          }
+        }
+      }
+
+
+  }
+
+}
