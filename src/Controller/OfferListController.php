@@ -167,7 +167,7 @@ class OfferListController extends AbstractController
      */
     private static function getDqlFilters(array $filters, EntityManagerInterface $entityManager)
     {
-        $dql = 'SELECT o.id, IDENTITY(o.location) FROM App\Entity\Offer o';
+        $dql = 'SELECT o.id, IDENTITY(o.location) FROM App\Entity\Offer o WHERE ';
         $search = self::getSearchTitleFilters($filters['search']);
         $salary = self::getMinMaxFilters('o.net_salary', $filters['min_salary'], $filters['max_salary']);
         $hours = self::getMinMaxFilters('o.week_hours', $filters['min_hours'], $filters['max_hours']);
@@ -180,15 +180,13 @@ class OfferListController extends AbstractController
         }
         if ($pass)
         {
-            $dql .= ' WHERE ';
             foreach ($arr_filters as $filter)
             {
                 if (!empty($filter))
                     $dql .= $filter . ' AND ';
             }
-            $dql = substr($dql, 0, -5);
         }
-        return $dql . ' ORDER BY o.post_date desc';
+        return $dql . ' o.validated = true ORDER BY o.post_date desc';
     }
     /*
      * Ecris le morceau de requete dql pour le filtrage du titre de l'annonce
