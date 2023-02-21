@@ -139,4 +139,9 @@ class Recruter
             unset($arr[$except]);
         return $arr;
     }
+
+    public function approve(): void
+    {
+        $this->setActivated(true);
+    }
 }

@@ -57,6 +57,8 @@ class SecurityController extends AbstractController
             if ($roles->is_candidate($user))
                 $entityManager->persist(new Candidate($user));
             $entityManager->flush();
+            return $this->redirectToRoute('app_message', ['title' => 'Inscription réussi',
+                'message' => "Vous pouvez maintenant vous connecter", 'redirect_app' => 'app_annonces']);
         }
 
         //Stats

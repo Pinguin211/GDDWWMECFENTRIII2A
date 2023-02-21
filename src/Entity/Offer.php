@@ -301,4 +301,9 @@ class Offer
         }
         return $nb;
     }
+
+    public function approve(): void
+    {
+        $this->setValidated(true);
+    }
 }

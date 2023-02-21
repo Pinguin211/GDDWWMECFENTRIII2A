@@ -158,4 +158,25 @@ class Candidate
         else
             return false;
     }
+
+    public function getAbsoluteCvPath(PathInterface $path): string | false
+    {
+        if ($this->getCvId())
+        {
+            $cv = $path->getUserCvDirPath() . $this->getCvId() . '.pdf';
+            return file_exists($cv) ? $cv : false;
+        }
+        else
+            return false;
+    }
+
+    public function approve(): void
+    {
+        $this->setActivated(true);
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getLastName() . ' ' . $this->getFirstName();
+    }
 }

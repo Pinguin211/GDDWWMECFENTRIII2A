@@ -6,7 +6,7 @@ use App\Entity\Location;
 use App\Entity\Offer;
 use App\Interface\LocationInterface;
 use App\Service\CheckerInterface;
-use App\Service\PathInterface;
+use App\Service\RolesInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -186,7 +186,7 @@ class OfferListController extends AbstractController
                     $dql .= $filter . ' AND ';
             }
         }
-        return $dql . ' o.validated = true ORDER BY o.post_date desc';
+        return $dql . ' o.validated = true and o.archived = false ORDER BY o.post_date desc';
     }
     /*
      * Ecris le morceau de requete dql pour le filtrage du titre de l'annonce
@@ -227,10 +227,10 @@ class OfferListController extends AbstractController
     ///         PAGE DETAIL D'ANNONCE
 
     #[Route('/annonce_detail', name: 'app_offer_detail')]
-    public function offer_detail(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager,
-                                PathInterface $path): Response
+    public function offer_detail(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager): Response
     {
-        if (!isset($_GET['id']) || !($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id'=>$_GET['id']])))
+        if (!isset($_GET['id']) || !($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id'=>$_GET['id']])) ||
+            (!$offer->isValidated() && !($this->isGranted(RolesInterface::ROLE_CONSULTANT) || $this->isGranted(RolesInterface::ROLE_ADMIN))))
             return $this->redirectToRoute('app_message', ['title' => 'Erreur 404', 'message' => "Cette page n'existe pas", 'redirect_app' => 'app_annonces']);
 
 

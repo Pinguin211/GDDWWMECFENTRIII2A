@@ -16,9 +16,13 @@ class AddOfferController extends AbstractController
     #[Route('/ajouter_annonce', name: 'app_add_offer')]
     public function add_offer(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if (!($user = $this->getUser()) || !($recruter = $user->getRecruter($entityManager)) || !$recruter->isActivated())
+        if (!($user = $this->getUser()) || !($recruter = $user->getRecruter($entityManager)))
             return $this->redirectToRoute('app_message', ['title' => 'Accés refusé',
                 'message' => "Vous n'avez pas les droit requis"]);
+        if (!$recruter->isActivated())
+            return $this->redirectToRoute('app_message', ['title' => 'Validation requise',
+                'message' => "Vous devez etres validés pour poster une annonces, 
+                completer votre profile et attendez qu'un consultant le valide"]);
 
         $offer = new Offer();
         $form = $this->createForm(OfferType::class, $offer);

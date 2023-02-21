@@ -36,7 +36,7 @@
         </div>
         {% set candidate = false %}
         {% if app.user %}{% set candidate = app.user.getcandidate(entitymanager) %}{% endif %}
-        {% if is_granted('ROLE_CANDIDATE') and candidate %}
+        {% if candidate and offer.isvalidated %}
                 <div class="row">
             {% if offer.candidatealreadyapplied(candidate) %}
                 <p id="valid_applied">Postulé <i class="bi bi-check-circle" style="color: yellowgreen"></i></p>
@@ -50,7 +50,7 @@
         {% endif %}
         {% set recruter = false %}
         {% if app.user %}{% set recruter = app.user.getrecruter(entitymanager) %}{% endif %}
-        {% if is_granted('ROLE_RECRUTER') and recruter and recruter.getid is same as(offer.getposter.getid) %}
+        {% if recruter and recruter.getid is same as(offer.getposter.getid) or is_granted('ROLE_CONSULTANT')%}
             <div id="candidate_list">
                 <label for="applied_candidate_list">Liste des candidatures validés : {{ offer.getCountValidateApplieds }}</label>
                 <table id="applied_candidate_list">

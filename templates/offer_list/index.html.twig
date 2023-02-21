@@ -92,8 +92,9 @@
                         </ul>
                         <div id="description" class="col">
                             <p>{{ delimitString(offer.getdescription, 500) | nl2br }}</p>
+                            {% set candidate = false %}
                             {% if app.user %}{% set candidate = app.user.getcandidate(entitymanager) %}{% endif %}
-                            {% if is_granted('ROLE_CANDIDATE') and candidate %}
+                            {% if candidate and offer.isvalidated %}
                                 <div class="row">
                                     {% if offer.candidatealreadyapplied(candidate) %}
                                         <p id="valid_applied">Postulé <i class="bi bi-check-circle" style="color: yellowgreen"></i></p>

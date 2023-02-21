@@ -15,7 +15,8 @@ class AppliedController extends AbstractController
     public function applied(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
     {
         if (!$checker->checkData($_POST, 'array', ['id']) ||
-            !($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id'=>$_POST['id']])))
+            !($offer = $entityManager->getRepository(Offer::class)->findOneBy(['id'=>$_POST['id']])) ||
+            !$offer->isValidated())
             return $this->redirectToRoute('app_message', ['title' => 'Erreur 404', 'message' => "Cette page n'existe pas", 'redirect_app' => 'app_annonces']);
         if (!$this->getUser())
             return $this->redirectToRoute('app_message', ['title' => 'Connectez vous', 'message' => "Vous devez être connecter pour postuler"]);

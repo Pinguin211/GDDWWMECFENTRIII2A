@@ -4,22 +4,98 @@
   max-width: $width;
 }
 
+@mixin table_param {
+  #list {
+    margin-top: 2em;
+    width: 65vw;
+    position: absolute;
+
+    thead, tbody {
+      width: 100%;
+      background-color: white;
+      border: black solid 1px;
+
+
+      td, th {
+        text-align: center;
+        height: 2em;
+        overflow: hidden;
+      }
+    }
+
+    tbody {
+      z-index: 0;
+      position: absolute;
+      max-height: 40vh;
+      min-height: 40vh;
+      @media (orientation: portrait), (max-width: 992px) {
+        max-height: 20vh;
+        min-height: 20vh;
+      }
+      overflow-y: scroll;
+      tr:nth-child(even) {
+        background-color: rgba(85, 85, 85, 0.18);
+      }
+    }
+  }
+}
+
 main {
   #window {
     padding: 50px 0;
     margin-left: 5%;
     margin-right: 5%;
 
-    #tabs_content {
-      position: absolute;
-      top: 121px;
-      height: 30px;
+
+    @media (orientation: landscape) and (min-device-width: 992px) {
+
+      #tabs_button {
+        display: none;
+      }
+
+      #tabs_content {
+        display: flex;
+        z-index: 5;
+        position: absolute;
+        top: 121px;
+        height: 30px;
+      }
 
       /* Onglet de la page */
       .tabs {
         border: black 1px solid;
         border-radius: 10px 10px 0 0;
       }
+    }
+
+    @media (orientation: portrait), (max-width: 992px) {
+
+      #tabs_button {
+        width: 100%;
+      }
+
+      #tabs_content {
+        z-index: 5;
+        height: 30px;
+        top: 0;
+        position: relative;
+        border: solid 1px black;
+        text-align: center;
+      }
+
+
+      .tabs {
+        border: black 1px solid;
+        box-shadow: 5px 5px 5px grey;
+      }
+
+    }
+
+
+
+      #tabs_content {
+      /* Onglet de la page */
+
       .active-tabs {
         background-color: #FFF4F4;
         border-bottom: none;
@@ -52,50 +128,46 @@ main {
         }
       }
 
-      /* Onglet my_offer */
+      /* ONGLET PROFIL */
 
-      #offer_tab {
-        #offer_list {
-          margin-top: 2em;
-          width: 70vw;
-          position: absolute;
-          thead, tbody {
-            width: 100%;
-            background-color: white;
-            border: black solid 1px;
+      #profil_tab {
+        .row {
+          width: 50vw;
+          margin-bottom: 1em;
+        }
+      }
 
-            td, th {
-              text-align: center;
-              height: 2em;
-              overflow: hidden;
-            }
+      /* ONGLET AVEC UNE TABLE  */
 
-            .offer_list_checkbox, .offer_list_detail, .offer_list_mod {
-              @include width-max(5vw);
-            }
+      #offer_tab, #approve_candidate_tab, #approve_recruter_tab, #approve_offer_tab, #approve_applied_tab, #admin_page_tab {
+        @include table_param;
 
-            .offer_list_title {
-              @include width-max(25vw)
-            }
+        .list_email_c {
+          @include width-max(60vw)
+        }
 
-            .offer_list_date {
-              @include width-max(20vw)
-            }
+        .list_email_u, .list_adresse_name {
+          @include width-max(30vw)
+        }
 
-            .offer_list_status {
-              @include width-max(10vw)
-            }
+        .list_title_o, .list_email_a{
+          @include width-max(25vw)
+        }
 
+        .list_company_name, .list_title_a_o, .list_date_a_o {
+          @include width-max(20vw)
+        }
 
-          }
+        .list_date_o, .list_first_name, .list_last_name, .list_email_r {
+          @include width-max(15vw)
+        }
 
-          tbody {
-            z-index: 0;
-            position: absolute;
-            max-height: 30vh;
-            min-height: 30vh;
-            overflow-y: scroll;
-          }
+        .list_status {
+          @include width-max(10vw)
+        }
+
+        .list_checkbox, .list_detail, .list_mod, .list_cv_id {
+          @include width-max(5vw);
         }
       }
     }

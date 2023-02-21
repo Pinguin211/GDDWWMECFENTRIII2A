@@ -8,6 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AppliedCandidateRepository::class)]
 class AppliedCandidate
 {
+
+    public const KEY_ID = 'id';
+    public const KEY_VALIDATED = 'validated';
+    public const KEY_OFFER_ID = 'offer_id';
+    public const KEY_CANDIDATE_ID = 'candidate_id';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -70,5 +76,23 @@ class AppliedCandidate
         $this->offer = $offer;
 
         return $this;
+    }
+
+    public function getValueAsArray(array $excepts = []): array
+    {
+        $arr = [
+            self::KEY_ID => $this->getId(),
+            self::KEY_VALIDATED => $this->isValidated(),
+            self::KEY_CANDIDATE_ID => $this->getCandidate()->getId(),
+            self::KEY_OFFER_ID => $this->getOffer()->getId(),
+        ];
+        foreach ($excepts as $except)
+            unset($arr[$except]);
+        return $arr;
+    }
+
+    public function approve(): void
+    {
+        $this->setValidated(true);
     }
 }

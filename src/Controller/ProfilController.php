@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Entity\Admin;
+use App\Entity\AppliedCandidate;
 use App\Entity\Candidate;
 use App\Entity\City;
 use App\Entity\Consultant;
@@ -18,6 +19,9 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -43,6 +47,9 @@ class ProfilController extends AbstractController
         ]);
     }
 
+    ////////////////////////////////////////////////////////////////
+    ///  ONGLET PROFIL
+
     #[Route('/profil_get_user')]
     public function getUserInformation(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
     {
@@ -61,8 +68,6 @@ class ProfilController extends AbstractController
             self::KEY_USER => $user->getValueAsArray(),
             self::KEY_CANDIDATE => self::getProfile($user, $entityManager, 'Candidate'),
             self::KEY_RECRUTER => self::getProfile($user, $entityManager, 'Recruter'),
-            self::KEY_CONSULTANT => $user->haveRole(RolesInterface::ROLE_CONSULTANT),
-            self::KEY_ADMIN => $user->haveRole(RolesInterface::ROLE_ADMIN)
         ];
 
     }
@@ -208,6 +213,8 @@ class ProfilController extends AbstractController
         return $up;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    /// ONGLET MES OFFRES
 
     #[Route('/profil_get_recruter_offers')]
     public function getRecruterOffers(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
@@ -269,6 +276,243 @@ class ProfilController extends AbstractController
         return $finish;
     }
 
+    ////////////////////////////////////////////////
+    /// ONGLET GESTIONS CANDIDATS
+
+    #[Route('/profil_get_no_validated_candidates')]
+    public function getNoValidatedCandidates(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            self::getApproveInfoChecker($entityManager, $checker, $_POST);
+            $candidates = $entityManager->getRepository(Candidate::class)->findBy(['activated' => false], ['id' => 'desc']);
+            $arr_candidate_info = [];
+            foreach ($candidates as $candidate)
+                $arr_candidate_info[] = array_merge($candidate->getValueAsArray([Candidate::KEY_USER_ID]), ['email' => $candidate->getUser()->getEmail()]);
+            return new JsonResponse(json_encode($arr_candidate_info));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('profil_approves_candidates')]
+    public function approveNoValidatedCandidates(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        return self::approveNoValidated($entityManager, $checker, $_POST, Candidate::class, "Les candidats ont bien était approuvés");
+    }
+
+    ////////////////////////////////////////////////////////
+    /// ONGLET GESTION RECRUTER
+
+    #[Route('/profil_get_no_validated_recruters')]
+    public function getNoValidatedRecruters(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            self::getApproveInfoChecker($entityManager, $checker, $_POST);
+            $recruters = $entityManager->getRepository(Recruter::class)->findBy(['activated' => false], ['id' => 'desc']);
+            $arr_recruter_info = [];
+            foreach ($recruters as $recruter)
+                $arr_recruter_info[] = array_merge($recruter->getValueAsArray([Recruter::KEY_USER_ID, Recruter::KEY_ADDRESS]),
+                    ['email' => $recruter->getUser()->getEmail(), 'address_name' => $recruter->getAddress()?->getFullName()]);
+            return new JsonResponse(json_encode($arr_recruter_info));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('profil_approves_recruters')]
+    public function approveNoValidatedRecruters(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        return self::approveNoValidated($entityManager, $checker, $_POST, Recruter::class, "Les recruteurs ont bien était approuvés");
+    }
+
+
+    ////////////////////////////////////////////////////////
+    /// ONGLET APPROUVE ANNONCES
+
+    #[Route('/profil_get_no_validated_offers')]
+    public function getNoValidatedOffers(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            self::getApproveInfoChecker($entityManager, $checker, $_POST);
+            $offers = $entityManager->getRepository(Offer::class)->findBy(['validated' => false], ['id' => 'desc']);
+            $arr_offer_info = [];
+            foreach ($offers as $offer)
+                $arr_offer_info[] = array_merge($offer->getValueAsArray([Offer::KEY_POSTER_ID,Offer::KEY_LOCATION_ID, Offer::KEY_APPLIEDS_ID]),
+                    ['company_name' => $offer->getPoster()->getCompanyName()]);
+            return new JsonResponse(json_encode($arr_offer_info));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('profil_approves_offers')]
+    public function approveNoValidatedOffers(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        return self::approveNoValidated($entityManager, $checker, $_POST, Offer::class, "Les annonces ont bien était approuvées");
+    }
+
+
+
+    ////////////////////////////////////////////////////////
+    /// ONGLET APPROUVE POSTULANCES
+
+    #[Route('/profil_get_no_validated_applieds')]
+    public function getNoValidatedApplieds(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            self::getApproveInfoChecker($entityManager, $checker, $_POST);
+            $applieds = $entityManager->getRepository(AppliedCandidate::class)->findBy(['validated' => false], ['id' => 'desc']);
+            $arr_applied_info = [];
+            foreach ($applieds as $applied)
+            {
+                $candidate = $applied->getCandidate();
+                $candidate_arr = $candidate->getValueAsArray([Candidate::KEY_USER_ID, Candidate::KEY_ID]);
+                $email_arr = ['email' => $candidate->getUser()->getEmail()];
+                $arr_applied_info[] = array_merge($applied->getValueAsArray([AppliedCandidate::KEY_CANDIDATE_ID]),
+                $candidate_arr, $email_arr);
+            }
+            return new JsonResponse(json_encode($arr_applied_info));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('profil_approves_applieds')]
+    public function approveNoValidatedApplieds(EntityManagerInterface $entityManager, CheckerInterface $checker,
+                                               PathInterface $path, MailerInterface $mailer): Response
+    {
+        $response = self::approveNoValidated($entityManager, $checker, $_POST, AppliedCandidate::class,
+            "Les candidatures ont bien était envoyé");
+        try {
+            $ids = json_decode($_POST['info']);
+            foreach ($ids as $id)
+            {
+                $applied = $entityManager->getRepository(AppliedCandidate::class)->findOneBy(['id' => $id]);
+                $offer = $applied->getOffer();
+                $recruter_email = $offer->getPoster()->getUser()->getEmail();
+                $candidate = $applied->getCandidate();
+                if (!($cv_path = $candidate->getAbsoluteCvPath($path)))
+                    throw new Exception("Email non envoyé au recruteur car le candidat n'a pas de cv en ligne");
+                else
+                    self::sendAppliedEmail($mailer, $cv_path, $candidate->getFullName(), $recruter_email, $offer->getTitle());
+            }
+            return $response;
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public static function sendAppliedEmail(MailerInterface $mailer, string $cv_path, string $name, string $email, string $offer_name)
+    {
+        if (file_exists($cv_path))
+        {
+            $email = (new Email())
+                ->from('kafe.countac@gmx.fr')
+                ->to($email)
+                ->subject("Candidature à l'offre '$offer_name'")
+                ->text("$name à postuler a votre offre '$offer_name'\n\n Son CV est envoyé join à se mail.")
+                ->attach(fopen($cv_path, 'r'), 'cv.pdf')
+            ;
+            $mailer->send($email);
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////
+    /// FONCTION COMMUNE POUR ACTION DU CONSULTANT
+
+
+    private static function approveNoValidated(EntityManagerInterface $entityManager, CheckerInterface $checker, array $post,
+                            string $class, string $message): Response
+    {
+        try {
+            $ids = self::setApproveInfoChecker($entityManager, $checker, $post);
+            foreach ($ids as $id)
+            {
+                if (!($entity = $entityManager->getRepository($class)->findOneBy(['id' => $id])))
+                    throw new Exception('Error Data', 422);
+                else
+                    $entity->approve(true);
+            }
+            $entityManager->flush();
+            return new Response($message, 200);
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function getApproveInfoChecker(EntityManagerInterface $entityManager, CheckerInterface $checker, $post)
+    {
+            if (!$checker->checkData($post, 'array', ['id', 'password']))
+                throw new Exception('Error Data', 422);
+            self::getRoledUserByPassWord(RolesInterface::ROLE_CONSULTANT, $_POST['id'], $_POST['password'], $entityManager);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function setApproveInfoChecker(EntityManagerInterface $entityManager, CheckerInterface $checker, $post): array
+    {
+        if (!$checker->checkData($post, 'array', ['id', 'password', 'info']) ||
+            !$checker->checkData(json_decode($post['info']), 'array'))
+            throw new Exception('Error Data', 422);
+        self::getRoledUserByPassWord(RolesInterface::ROLE_CONSULTANT, $_POST['id'], $_POST['password'], $entityManager);
+        return json_decode($post['info']);
+    }
+
+
+
+    ////////////////////////////////////////////////////////
+    /// ONGLET ADMIN PAGE
+
+    #[Route('/profil_get_consultants')]
+    public function getConsultants(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+        try {
+            if (!$checker->checkData($_POST, 'array', ['id', 'password']))
+                throw new Exception('Error Data', 422);
+            self::getRoledUserByPassWord(RolesInterface::ROLE_ADMIN, $_POST['id'], $_POST['password'], $entityManager);
+            $arr_consultants_info = $entityManager->createQuery(
+                "SELECT u.email,u.id FROM App\Entity\User u WHERE JSON_CONTAINS(u.roles, '[\"ROLE_CONSULTANT\"]') = 1"
+            )->execute();
+            return new JsonResponse(json_encode($arr_consultants_info));
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    #[Route('profil_remove_consultants')]
+    public function removeConsultant(EntityManagerInterface $entityManager, CheckerInterface $checker): Response
+    {
+
+        try {
+            if (!$checker->checkData($_POST, 'array', ['id', 'password', 'info']))
+                throw new Exception('Error Data', 422);
+            self::getRoledUserByPassWord(RolesInterface::ROLE_ADMIN, $_POST['id'], $_POST['password'], $entityManager);
+            $ids = json_decode($_POST['info']);
+            foreach ($ids as $id)
+            {
+                if (!($user = $entityManager->getRepository(User::class)->findOneBy(['id' => $id])))
+                    throw new Exception('Error Data 2', 422);
+                $user->setRoles(array_diff($user->getRoles(), [RolesInterface::ROLE_CONSULTANT]));
+            }
+            $entityManager->flush();
+            return new Response("Les consultants ont bien était supprimé", 200);
+        } catch (Exception $exception) {
+            return new Response($exception->getMessage(), $exception->getCode());
+        }
+    }
+
+
+
+    //////////////////////////////////////////////////////////
+    ///  FONCTION D'AUTHENTIFICATION
 
     /**
      * Authentification de l'utilisateur
@@ -294,22 +538,14 @@ class ProfilController extends AbstractController
                             EntityManagerInterface $entityManager): Candidate | Recruter | Consultant | Admin
     {
         $user = self::getUserByIdPassword($post_user_id, $post_password, $entityManager);
-        switch ($role) {
-            case RolesInterface::ROLE_CANDIDATE:
-                $roled_user = $user->getCandidate($entityManager);
-                break;
-            case RolesInterface::ROLE_RECRUTER:
-                $roled_user = $user->getRecruter($entityManager);
-                break;
-            case RolesInterface::ROLE_CONSULTANT:
-                $roled_user = $user->getConsultant();
-                break;
-            case RolesInterface::ROLE_ADMIN:
-                $roled_user = $user->getAdmin();
-                break;
-            default:
-                $roled_user = false;
-        }
+        $roled_user = match ($role)
+        {
+            RolesInterface::ROLE_CANDIDATE => $user->getCandidate($entityManager),
+            RolesInterface::ROLE_RECRUTER => $user->getRecruter($entityManager),
+            RolesInterface::ROLE_CONSULTANT => $user->getConsultant(),
+            RolesInterface::ROLE_ADMIN => $user->getAdmin(),
+            default => false,
+        };
         if ($roled_user)
             return $roled_user;
         else

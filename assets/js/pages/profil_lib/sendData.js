@@ -1,6 +1,5 @@
 //FONCTION QUI ENVOIE LES DONNEES
 
-//tab profil
 const $ = require("jquery");
 
 
@@ -58,7 +57,7 @@ function sendCv(user_info, tab) {
 /// ONGLET MES OFFRES
 
 export function sendData_Offer(user_info, tab) {
-    const offers_ids = getIdOfferAction()
+    const offers_ids = getChecboxValue()
     const action_type = $('#offer_opt').val()
 
     if (action_type === '0')
@@ -72,7 +71,65 @@ export function sendData_Offer(user_info, tab) {
     }
 }
 
-function getIdOfferAction(id_checkbox = '#checkbox') {
+
+//////////////////////////////////////////////
+/// ONGLET GESTION CANDIDATS
+
+export function sendData_approve_candidates(user_info, tab) {
+    sendDataApprove('/profil_approves_candidates', user_info, tab,
+        'Vous n\'avez pas selectionné de candidats')
+}
+
+/////////////////////////////////////////
+//ONGLETS GESTION RECRUTER
+
+export function sendData_approve_recruters(user_info, tab) {
+    sendDataApprove('/profil_approves_recruters', user_info, tab,
+        'Vous n\'avez pas selectionné de recruteurs')
+}
+
+/////////////////////////////////////////
+//ONGLETS GESTION ANNONCES
+
+export function sendData_approve_offers(user_info, tab) {
+    sendDataApprove('/profil_approves_offers', user_info, tab,
+        'Vous n\'avez pas selectionné d\'annonces')
+}
+
+/////////////////////////////////////////
+//ONGLETS GESTION POSTULANCES
+
+export function sendData_approve_applieds(user_info, tab) {
+    sendDataApprove('/profil_approves_applieds', user_info, tab,
+        'Vous n\'avez pas selectionné de candidats')
+}
+
+
+/////////////////////////////////////////
+//ONGLETS ADMIN PAGE
+
+export function sendData_admin_page(user_info, tab) {
+    sendDataApprove('/profil_remove_consultants', user_info, tab,
+        'Vous n\'avez pas selectionné de consultant')
+}
+
+
+///////////////////////////////////////////////
+// FONCTION COMMUNE
+
+
+function sendDataApprove(url, user_info, tab, no_select_alert) {
+    const ids = getChecboxValue()
+
+    if (ids.length < 1)
+        alert(no_select_alert)
+    else {
+        sendData(url,
+            JSON.stringify(ids), user_info, tab)
+    }
+}
+
+function getChecboxValue(id_checkbox = '#checkbox') {
     let arr_id = []
     let i = 1
     while ($(id_checkbox + i.toString()).val()) {
@@ -82,11 +139,6 @@ function getIdOfferAction(id_checkbox = '#checkbox') {
     }
     return arr_id
 }
-
-
-
-///////////////////////////////////////////////
-// FONCTION COMMUNE
 
 function sendData(url, json_info, user_info, tab) {
     $.ajax({

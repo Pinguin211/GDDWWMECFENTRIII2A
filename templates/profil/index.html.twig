@@ -10,13 +10,16 @@
 {% block body %}
     <main>
         <div id="window">
-            <div id="tabs_content" class="row">
-                <div id="profil" class="col-auto tabs active-tabs">Profil</div>
-                <div id="my_offer" class="col-auto tabs disabled-tabs" hidden>Mes offres</div>
-                <div id="approve_signup" class="col-auto tabs disabled-tabs" hidden>Gestion utilisateurs</div>
-                <div id="approve_offer" class="col-auto tabs disabled-tabs" hidden>Gestion offres</div>
-                <div id="approve_applied" class="col-auto tabs disabled-tabs" hidden>Gestion postulances</div>
-                <div id="admin_page" class="col-auto tabs disabled-tabs" hidden>Page Administrations</div>
+            <button id="tabs_button" class="btn" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#tabs_content"><i class="bi bi-menu-app"></i></button>
+            <div id="tabs_content" class="row collapse">
+                <div id="profil" class="col-lg-auto tabs active-tabs">Profil</div>
+                <div id="my_offer" class="col-lg-auto tabs disabled-tabs" hidden>Mes offres</div>
+                <div id="approve_candidate" class="col-lg-auto tabs disabled-tabs" hidden>Gestion candidats</div>
+                <div id="approve_recruter" class="col-lg-auto tabs disabled-tabs" hidden>Gestion recruteurs</div>
+                <div id="approve_offer" class="col-lg-auto tabs disabled-tabs" hidden>Gestion offres</div>
+                <div id="approve_applied" class="col-lg-auto tabs disabled-tabs" hidden>Gestion postulances</div>
+                <div id="admin_page" class="col-lg-auto tabs disabled-tabs" hidden>Page Administrations</div>
             </div>
             <div id="page_content">
                 <div id="main_content" class="row">
