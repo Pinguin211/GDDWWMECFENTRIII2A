@@ -38,6 +38,18 @@ Ci-dessous les liens et tutoriels d'installation pour les prérequis
 ---  
 ---
 
+_**Si vous souaihter remplir la base de donner avec des faux element de test,
+vous pouvez suivre les commande suivante sinon passez directement au demarage de l'installation**_
+
+    mysql -u root -p <le_nom_de_votre_base_de_données> < sources/dump.sql
+
+Il faut remplacer <le_nom_de_votre_base_de_données> par le nom de votre base de donnés  
+Si vous effectuer cette étape vous pourrez passer l'étape de la migration de la base de donné
+
+
+---
+---
+
 ## Démarrage
 
 Pour chaque étape il y aura les commandes associées
@@ -89,7 +101,7 @@ les paramètre de l'environnement, il devrait ressembler à ça :
 Il faudra ensuite effectuer cette commande pour télécharger toutes les dépendances et
 l'outil qui permettra de verifier si les dépendances sont completes
 
-    composer require symfony/requirements-checker
+    sudo composer require symfony/requirements-checker
 
 ---
 
@@ -98,7 +110,21 @@ et retiré c equi ne servent pas
 
     sudo composer install --no-dev --optimize-autoloader
 
-Vous devriez avoir se resultat :
+Vous devriez avoir ce résultat :
+
+# PHOTO
+
+---
+
+Vous allez récupérer les dépendances à node.js avec la command suivante
+
+    sudo npm install
+
+Il faut maintenant compiler les assets avec la commande suivante
+
+    sudo npm run build
+
+Vous devriez avoir ce résultat :
 
 # PHOTO
 
@@ -106,20 +132,21 @@ Vous devriez avoir se resultat :
 
 ### Configuration du projet
 
-Vous effectuerez la commande suivante pour créer le dossier de logs
+Vous effectuerez les commandes suivantes pour créer les dossiers de logs et de cache
+
+    sudo mkdir var/log
+    sudo mkdir var/cache
+
 (Si le dossier est deja créer ce n'est pas obligatoire)
 
-    sudo mkdir var/log && chmod 777 var/log
+Puis faites les commande suivantes pour permettre à l'application d'écrire dans les dossiers
+
+    sudo chmod -R 777 var/log
+    sudo chmod -R 777 var/cache
 
 ---
 
-Si la base de données n'est pas créé vous pouvez faire la commande suivante,
-sinon passer directement à l'étape suivante
-
-    sudo php bin/console doctrine:database:create
-
----
-
+**Vous pouvez sauter cette étape si vous avez deja remplie la base de données au début**  
 Ensuite vous effectuerez la migration pour créer les tables nécessaires à la base de données  
 **Votre base de données doit être vide pour effectuer ce script sinon cela pourrait supprimer vos données**
 
@@ -136,17 +163,11 @@ il doit contenir au minimum 8 caractères,
 1 majuscule, 1 minuscule et 1 chiffre
 
 /!\ ATTENTION : Prenez bien note du mot de passe si vous vous trompez
-il faudra effacez manuelement l'utilisateur dans la base de données avant de recommencer /!\
+il faudra effacez manuellement l'utilisateur dans la base de données avant de recommencer /!\
 
 Vous pourrez donc vous connecter en tant qu'administrateur sur le site avec pour information:  
-Email: admin@admin  
-Mot de passe: Celui que vous avez choisi
-
----
-
-Il faut maintenant compiler les assets avec la commande suivante
-
-    sudo npm run build
+Email : admin@admin  
+Mot de passe : Celui que vous avez choisi
 
 ---
 
@@ -154,7 +175,14 @@ Vous allez ensuite vider les cache avec cette commande
 
     sudo APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
 
+---
 
+Pour finir vous effectuerez les commandes suivantes pour désactiver la page par défauts d'apache2,
+déplacer le fichier de configuration apache2 et recharger apache
+
+    sudo a2dissites 000-default.conf
+    sudo sources/copie_conf.sh
+    sudo systemctl reload apache2.service
 
 
 
