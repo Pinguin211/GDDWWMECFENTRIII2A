@@ -27,12 +27,14 @@ try {
     die("\nErreur : $message\n");
 }
 
+$app_debug = "APP_DEBUG=0";
+$app_env = "APP_ENV=prod";
 $database_url = "DATABASE_URL=\"mysql://$id:$password@$address:$port/$dbname?serverVersion=8&charset=utf8mb4\"";
 $database_pdo_url = "DATABASE_PDO_URL=\"$dsn\"";
 $database_user = "DATABASE_USER=\"$id\"";
 $database_password = "DATABASE_PASSWORD=\"$password\"";
 
-$file_content = "$database_url\n$database_pdo_url\n$database_user\n$database_password";
+$file_content = "$app_env\n$app_debug\n$database_url\n$database_pdo_url\n$database_user\n$database_password\n";
 file_put_contents('.env.local', $file_content);
 echo "\nLa base de données a bien etait configurer\n";
 
