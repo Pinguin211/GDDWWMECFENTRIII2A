@@ -12,9 +12,10 @@ Vous aurez aussi besoin des privilege de super-utilisateurs sur cette machine
 
 ### Pré-requis
 
-Afin de pouvoir exécuter l'application sur votre poste, vous devez d'abord installer les dépendances suivantes :
+Afin de pouvoir exécuter l'application sur votre poste, vous devez 
+d'abord installer les dépendances suivantes :
 * Apache2
-* Php8.1
+* Php8.2
 * MySql (Si la base de données est en local)
 * NodeJs
 * composer
@@ -25,27 +26,21 @@ Ci-dessous les liens et tutoriels d'installation pour les prérequis
 
 #### Apache2 - https://doc.ubuntu-fr.org/apache2
 
-#### Php (Version 8 minimum) - https://doc.ubuntu-fr.org/php
-
+#### Php (Version 8 minimum) et extensions
+    sudo add-apt-repository ppa:ondrej/php
+    sudo apt update
+    sudo apt install php8.2 php8.2-cli php8.2-{curl,bz2,mbstring,intl,xml,mysql}
+    sudo apt install php-mysql
+    sudo apt install php-xml
 #### MySql - https://doc.ubuntu-fr.org/mysql
 
-#### Nodejs - https://doc.ubuntu-fr.org/nodejs
+#### Nodejs (VERSION 19)
+    curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash -
+    sudo apt-get update && sudo apt-get install -y nodejs
 
 #### Composer - https://doc.ubuntu-fr.org/composer
 
 #### Git - https://doc.ubuntu-fr.org/git
-
----  
----
-
-_**Si vous souaihter remplir la base de donner avec des faux element de test,
-vous pouvez suivre les commande suivante sinon passez directement au demarage de l'installation**_
-
-    mysql -u root -p <le_nom_de_votre_base_de_données> < sources/dump.sql
-
-Il faut remplacer <le_nom_de_votre_base_de_données> par le nom de votre base de donnés  
-Si vous effectuer cette étape vous pourrez passer l'étape de la migration de la base de donné
-
 
 ---
 ---
@@ -74,11 +69,46 @@ Placer vous ensuite dans le dossier du projet
 
 ---
 
+### Creation de la base de données
+
+Faites cette commande pour lancer Mysql
+
+    sudo mysql
+
+Suivez ce tutoriel pour créer un utilisateur et lui donné les droits à mysql  
+https://www.hostinger.fr/tutoriels/creer-un-utilisateur-mysql
+
+Démarrer mysql avec cette commande
+
+    mysql -u <nom_de_votre_utilisateur> -p
+
+Insérer votre mot de passe et une fois dans mysql exécuter la commande suivante pour créer une base de donné
+
+    create database <nom_de_votre_base_de_donné>;
+
+Ensuite, exit pour quitter Mysql
+
+    exit;
+
+---
+---
+
+_**Si vous souaihter remplir la base de donner avec des faux element de test,
+vous pouvez suivre les commande suivante sinon passez directement à l'installation des bibliothèques**_
+
+    mysql -u <nom_de_votre_utilisateur> -p <le_nom_de_votre_base_de_données> < sources/dump.sql
+
+Il faut remplacer <le_nom_de_votre_base_de_données> par le nom de votre base de donnés  
+Si vous effectuer cette étape vous pourrez passer l'étape de la migration de la base de donné
+
+
+---
+---
 ### Installation des bibliothèques du projet
 
 Une fois dans le dossier du projet (vous devriez voir sa) :
 
-# PHOTO
+[image](sources/img/1.png)
 
 ---
 Vous devrez ensuite configurer la base de données, verifier que votre base de données soit bien activé,
@@ -89,12 +119,12 @@ vous effectuerez la commande suivante pour lancer le script
 Vous devez remplir les informations concernant votre base de données  
 (ci dessous les informations sont pour une base de données en local)
 
-# PHOTO
+[image](sources/img/2.png)
 
 Ce script aura pour effet d'inscrire dans le fichier .env.local les données de connexions à la base de donné et
 les paramètre de l'environnement, il devrait ressembler à ça :
 
-# PHOTO
+[image](sources/img/3.png)
 
 ---
 
@@ -112,7 +142,7 @@ et retiré c equi ne servent pas
 
 Vous devriez avoir ce résultat :
 
-# PHOTO
+[image](sources/img/4.png)
 
 ---
 
@@ -126,7 +156,7 @@ Il faut maintenant compiler les assets avec la commande suivante
 
 Vous devriez avoir ce résultat :
 
-# PHOTO
+[image](sources/img/5.png)
 
 ---
 
@@ -184,8 +214,11 @@ déplacer le fichier de configuration apache2 et recharger apache
     sudo sources/copie_conf.sh
     sudo systemctl reload apache2.service
 
+---
 
+Vous pouvez maintenant ouvrir votre serveur au réseau est vous connectez
 
+[image](sources/img/6.png)
 
 
 
