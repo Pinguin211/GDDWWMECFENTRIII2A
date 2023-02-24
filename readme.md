@@ -162,17 +162,19 @@ Vous devriez avoir ce résultat :
 
 ### Configuration du projet
 
-Vous effectuerez les commandes suivantes pour créer les dossiers de logs et de cache
+Vous effectuerez les commandes suivantes pour créer les dossiers de logs, cache et des CV
 
     sudo mkdir var/log
     sudo mkdir var/cache
+    sudo mkdir public/cv
 
 (Si le dossier est deja créer ce n'est pas obligatoire)
 
-Puis faites les commande suivantes pour permettre à l'application d'écrire dans les dossiers
+Puis faites les commandes suivantes pour permettre à l'application d'écrire dans les dossiers
 
     sudo chmod -R 777 var/log
     sudo chmod -R 777 var/cache
+    sudo chmod 777 public/cv
 
 ---
 
