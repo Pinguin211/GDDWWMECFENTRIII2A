@@ -21,7 +21,7 @@ main>div {
   }
 
 
-  @media (orientation: landscape) and (min-device-width: 992px) {
+  @media (orientation: landscape) and (min-width: 992px) {
 
     border: solid black 1px;
     margin: 20vh 20vw;

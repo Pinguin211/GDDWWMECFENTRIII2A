@@ -3,7 +3,7 @@
 
 body {
 
-  @media (orientation: landscape) and (min-device-width: 992px){
+  @media (orientation: landscape) and (min-width: 992px){
     main {
       margin-top: 100px;
     }

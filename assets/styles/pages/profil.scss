@@ -47,7 +47,7 @@ main {
     margin-right: 5%;
 
 
-    @media (orientation: landscape) and (min-device-width: 992px) {
+    @media (orientation: landscape) and (min-width: 992px) {
 
       #tabs_button {
         display: none;

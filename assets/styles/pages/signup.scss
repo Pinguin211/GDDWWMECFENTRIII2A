@@ -65,7 +65,7 @@ main {
     }
   }
 
-  @media (orientation: landscape) and (min-device-width: 992px) {
+  @media (orientation: landscape) and (min-width: 992px) {
 
     #form, #stats {
       width: 50%;
