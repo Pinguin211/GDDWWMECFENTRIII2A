@@ -6,7 +6,7 @@ else
 {
     $out = '';
     $code = 0;
-    exec("php bin/console security:hash-password 123AZEqsd", $out, $code);
+    exec("php bin/console security:hash-password " . $argv[1], $out, $code);
     if ($code === 0)
         $password = explode(' ', trim(preg_replace('/\s\s+/', ' ', $out[4])))[2];
     else
